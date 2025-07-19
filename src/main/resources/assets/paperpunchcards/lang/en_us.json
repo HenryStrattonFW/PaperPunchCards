@@ -1,0 +1,13 @@
+{
+  "itemGroup.paperpunchcards": "Example Mod Tab",
+  "block.paperpunchcards.example_block": "Example Block",
+  "item.paperpunchcards.example_item": "Example Item",
+
+  "paperpunchcards.configuration.title": "Paper Punch Cards Configs",
+  "paperpunchcards.configuration.section.paperpunchcards.common.toml": "Paper Punch Cards Configs",
+  "paperpunchcards.configuration.section.paperpunchcards.common.toml.title": "Paper Punch Cards Configs",
+  "paperpunchcards.configuration.items": "Item List",
+  "paperpunchcards.configuration.logDirtBlock": "Log Dirt Block",
+  "paperpunchcards.configuration.magicNumberIntroduction": "Magic Number Text",
+  "paperpunchcards.configuration.magicNumber": "Magic Number"
+}
