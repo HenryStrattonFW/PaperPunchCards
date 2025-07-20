@@ -1,0 +1,147 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/cube_all",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "paperpunchcards:block/card_puncher_block",
+		"particle": "paperpunchcards:block/card_puncher_block"
+	},
+	"elements": [
+		{
+			"name": "Shelf_Base",
+			"from": [1, 7, 5],
+			"to": [16, 9, 11],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [2, 8, 5]},
+			"faces": {
+				"north": {"uv": [0, 9, 7.5, 10], "texture": "#0"},
+				"east": {"uv": [0, 10, 3, 11], "texture": "#0"},
+				"south": {"uv": [0, 9, 7.5, 10], "texture": "#0"},
+				"west": {"uv": [0, 10, 3, 11], "texture": "#0"},
+				"up": {"uv": [0, 6, 7.5, 9], "texture": "#0"},
+				"down": {"uv": [0, 6, 7.5, 9], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Shelf_Block",
+			"from": [9, 6, 4],
+			"to": [15, 10, 12],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [2, 8, 5]},
+			"faces": {
+				"north": {"uv": [10, 13, 13, 15], "texture": "#0"},
+				"east": {"uv": [10, 11, 14, 13], "texture": "#0"},
+				"south": {"uv": [10, 13, 13, 15], "texture": "#0"},
+				"west": {"uv": [10, 11, 14, 13], "texture": "#0"},
+				"up": {"uv": [8, 5, 11, 9], "texture": "#0"},
+				"down": {"uv": [11, 5, 14, 9], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Shelf_Bottom",
+			"from": [0, 7, 11],
+			"to": [9, 10, 12],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [2, 8, 5]},
+			"faces": {
+				"north": {"uv": [0, 11, 4.5, 12.5], "texture": "#0"},
+				"east": {"uv": [13.5, 13.5, 14, 15], "texture": "#0"},
+				"south": {"uv": [0, 11, 4.5, 12.5], "texture": "#0"},
+				"west": {"uv": [14, 8, 14.5, 9.5], "texture": "#0"},
+				"up": {"uv": [15.5, 5, 16, 9.5], "rotation": 270, "texture": "#0"},
+				"down": {"uv": [15, 5, 15.5, 9.5], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "Shelf_Side",
+			"from": [0, 7, 5],
+			"to": [1, 10, 11],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [2, 8, 5]},
+			"faces": {
+				"north": {"uv": [14.5, 8, 15, 9.5], "texture": "#0"},
+				"east": {"uv": [4.5, 11, 7.5, 12.5], "texture": "#0"},
+				"south": {"uv": [13.5, 13.5, 14, 15], "texture": "#0"},
+				"west": {"uv": [4.5, 11, 7.5, 12.5], "texture": "#0"},
+				"up": {"uv": [14.5, 5, 15, 8], "texture": "#0"},
+				"down": {"uv": [14, 5, 14.5, 8], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Base",
+			"from": [0, 0, 3],
+			"to": [16, 2, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 3]},
+			"faces": {
+				"north": {"uv": [0, 5, 8, 6], "texture": "#0"},
+				"east": {"uv": [1.5, 5, 6.5, 6], "texture": "#0"},
+				"south": {"uv": [0, 5, 8, 6], "texture": "#0"},
+				"west": {"uv": [1.5, 5, 6.5, 6], "texture": "#0"},
+				"up": {"uv": [0, 0, 8, 5], "texture": "#0"},
+				"down": {"uv": [8, 0, 16, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Stand_Post",
+			"from": [10, 2, 5],
+			"to": [14, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [26, 3, 6]},
+			"faces": {
+				"north": {"uv": [8, 9, 10, 11], "texture": "#0"},
+				"east": {"uv": [12, 9, 14, 11], "texture": "#0"},
+				"south": {"uv": [10, 9, 12, 11], "texture": "#0"},
+				"west": {"uv": [8, 11, 10, 13], "texture": "#0"},
+				"up": {"uv": [8, 9, 10, 11], "texture": "#0"},
+				"down": {"uv": [8, 9, 10, 11], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, -65, 0],
+			"translation": [0, 0.5, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -65, 0],
+			"translation": [0, 0.5, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 45, 0],
+			"translation": [0, 1.75, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"rotation": [0, 180, 0]
+		},
+		"fixed": {
+			"rotation": [0, -180, 0],
+			"translation": [0, 1.25, 0],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
+	"groups": [
+		{
+			"name": "Shelf",
+			"origin": [0, 3, 7],
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		},
+		{
+			"name": "Stand",
+			"origin": [26, 3, 6],
+			"color": 0,
+			"children": [4, 5]
+		}
+	]
+}

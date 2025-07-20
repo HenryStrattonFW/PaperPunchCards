@@ -1,0 +1,7 @@
+{
+	"format_version": "1.21.6",
+	"parent": "paperpunchcards:block/card_reader_block",
+	"textures": {
+		"0": "paperpunchcards:block/card_reader_block_empty"
+	}
+}

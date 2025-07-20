@@ -1,8 +1,12 @@
 {
   "itemGroup.paperpunchcards": "Paper Punch Cards",
-  
-  "block.paperpunchcards.example_block": "Example Block",
-  "item.paperpunchcards.example_item": "Example Item",
+
+  "block.paperpunchcards.tape_player_block": "Tape Player",
+  "block.paperpunchcards.card_reader_block": "Card Reader",
+  "block.paperpunchcards.card_puncher_block": "Card Puncher",
+
+  "item.paperpunchcards.punch_card_item": "Punch Card",
+  "item.paperpunchcards.paper_tape_item": "Paper Tape",
 
   "paperpunchcards.configuration.title": "Paper Punch Cards Configs",
   "paperpunchcards.configuration.section.paperpunchcards.common.toml": "Paper Punch Cards Configs",

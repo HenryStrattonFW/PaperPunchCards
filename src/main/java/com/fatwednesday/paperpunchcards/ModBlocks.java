@@ -1,9 +1,15 @@
 package com.fatwednesday.paperpunchcards;
 
+import com.fatwednesday.paperpunchcards.crafting.CardPuncherBlock;
+import com.fatwednesday.paperpunchcards.readers.CardReaderBlock;
+import com.fatwednesday.paperpunchcards.readers.TapePlayerBlock;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModBlocks
@@ -12,6 +18,27 @@ public class ModBlocks
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(
             Registries.BLOCK_ENTITY_TYPE,
             PaperPunchCards.MOD_ID
+    );
+
+    public static final DeferredBlock<Block> CARD_PUNCHER_BLOCK = BLOCKS.registerBlock(
+            "card_puncher_block",
+            CardPuncherBlock::new,
+            BlockBehaviour.Properties.of()
+                    .strength(1.0f)
+    );
+
+    public static final DeferredBlock<Block> CARD_READER_BLOCK = BLOCKS.registerBlock(
+            "card_reader_block",
+            CardReaderBlock::new,
+            BlockBehaviour.Properties.of()
+                    .strength(1.0f)
+    );
+
+    public static final DeferredBlock<Block> TAPE_PLAYER_BLOCK = BLOCKS.registerBlock(
+            "tape_player_block",
+            TapePlayerBlock::new,
+            BlockBehaviour.Properties.of()
+                    .strength(1.0f)
     );
 
     public static void register(IEventBus modBus)

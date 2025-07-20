@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "paperpunchcards:item/paper_tape_item"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "paperpunchcards:has_sequence": 1
+      },
+      "model": "paperpunchcards:item/paper_tape_item_with_data"
+    }
+  ]
+}

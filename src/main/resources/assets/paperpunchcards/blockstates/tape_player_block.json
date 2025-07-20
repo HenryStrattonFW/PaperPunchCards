@@ -1,0 +1,19 @@
+{
+  "variants":
+  {
+    "facing=north,state=empty":  { "model": "paperpunchcards:block/tape_player_block" },
+    "facing=south,state=empty":  { "model": "paperpunchcards:block/tape_player_block", "y": 180 },
+    "facing=west,state=empty":   { "model": "paperpunchcards:block/tape_player_block", "y": 270 },
+    "facing=east,state=empty":   { "model": "paperpunchcards:block/tape_player_block", "y": 90 },
+
+    "facing=north,state=full":  { "model": "paperpunchcards:block/tape_player_block_full" },
+    "facing=south,state=full":  { "model": "paperpunchcards:block/tape_player_block_full", "y": 180 },
+    "facing=west,state=full":   { "model": "paperpunchcards:block/tape_player_block_full", "y": 270 },
+    "facing=east,state=full":   { "model": "paperpunchcards:block/tape_player_block_full", "y": 90 },
+
+    "facing=north,state=active":  { "model": "paperpunchcards:block/tape_player_block_active" },
+    "facing=south,state=active":  { "model": "paperpunchcards:block/tape_player_block_active", "y": 180 },
+    "facing=west,state=active":   { "model": "paperpunchcards:block/tape_player_block_active", "y": 270 },
+    "facing=east,state=active":   { "model": "paperpunchcards:block/tape_player_block_active", "y": 90 }
+  }
+}

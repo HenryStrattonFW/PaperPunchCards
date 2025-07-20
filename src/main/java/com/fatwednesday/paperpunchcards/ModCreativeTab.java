@@ -20,9 +20,13 @@ public class ModCreativeTab
             ()->CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.paperpunchcards"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(()->null)
+                    .icon(()->ModItems.TAPE_PLAYER_BLOCK_ITEM.get().getDefaultInstance())
                     .displayItems((parameters, output)->{
-                        // Add stuff here
+                        output.accept(ModBlocks.TAPE_PLAYER_BLOCK.get());
+                        output.accept(ModBlocks.CARD_PUNCHER_BLOCK.get());
+                        output.accept(ModBlocks.CARD_READER_BLOCK.get());
+                        output.accept(ModItems.PAPER_TAPE_ITEM.get());
+                        output.accept(ModItems.PUNCH_CARD_ITEM.get());
                     })
                     .build()
     );

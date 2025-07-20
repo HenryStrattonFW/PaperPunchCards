@@ -1,0 +1,7 @@
+{
+	"format_version": "1.21.6",
+	"parent": "paperpunchcards:block/tape_player_block",
+	"textures": {
+		"2": "paperpunchcards:block/tape_player_core_anim"
+	}
+}
