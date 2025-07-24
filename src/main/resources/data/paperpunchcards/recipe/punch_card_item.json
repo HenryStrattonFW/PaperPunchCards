@@ -1,0 +1,16 @@
+{
+    "type":"minecraft:crafting_shapeless",
+    "category": "redstone",
+    "ingredients": [
+        {
+            "item": "minecraft:paper"
+        },
+        {
+            "item": "minecraft:shears"
+        }
+    ],
+    "result": {
+        "id": "paperpunchcards:punch_card_item",
+        "count": 4
+    }
+}

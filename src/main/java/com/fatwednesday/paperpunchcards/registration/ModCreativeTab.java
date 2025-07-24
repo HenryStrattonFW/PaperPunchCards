@@ -1,5 +1,6 @@
-package com.fatwednesday.paperpunchcards;
+package com.fatwednesday.paperpunchcards.registration;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;

@@ -1,5 +1,6 @@
-package com.fatwednesday.paperpunchcards;
+package com.fatwednesday.paperpunchcards.registration;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperTapeItem;
 import com.fatwednesday.paperpunchcards.items.PunchCardItem;
 import net.minecraft.client.renderer.item.ItemProperties;

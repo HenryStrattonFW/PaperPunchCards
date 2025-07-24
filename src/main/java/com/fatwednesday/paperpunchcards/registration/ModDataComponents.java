@@ -1,5 +1,6 @@
-package com.fatwednesday.paperpunchcards;
+package com.fatwednesday.paperpunchcards.registration;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;

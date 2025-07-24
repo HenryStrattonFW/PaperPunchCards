@@ -1,11 +1,14 @@
 package com.fatwednesday.paperpunchcards;
 
+import com.fatwednesday.paperpunchcards.registration.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
@@ -31,9 +34,13 @@ public class PaperPunchCards
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModCreativeTab.register(modEventBus);
+        ModMenus.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
+
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+
     }
 
     public static ResourceLocation getResource(String path)
@@ -43,12 +50,12 @@ public class PaperPunchCards
 
     public static void log(String message)
     {
-        LOGGER.info("[%s] %s", MOD_ID, message);
+        LOGGER.info("[%s] %s".formatted(MOD_ID, message));
     }
 
     public static void error(String message)
     {
-        LOGGER.error("[%s] %s", MOD_ID, message);
+        LOGGER.error("[%s] %s".formatted(MOD_ID, message));
     }
 
     private void commonSetup(FMLCommonSetupEvent event)
@@ -84,7 +91,7 @@ public class PaperPunchCards
         @SubscribeEvent
         public static void onRegisterScreens(RegisterMenuScreensEvent event)
         {
-            ModMenus.registerScreens(event);
+            ModMenus.onRegisterScreens(event);
         }
     }
 }
