@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "#O#"
+  ],
+  "key": {
+    "#": {
+      "item": "paperpunchcards:punch_card_item"
+    },
+    "O": {
+      "item": "minecraft:observer"
+    }
+  },
+  "result": {
+    "id": "paperpunchcards:paper_tape_item",
+    "count": 1
+  }
+}

@@ -1,5 +1,6 @@
-package com.fatwednesday.paperpunchcards;
+package com.fatwednesday.paperpunchcards.registration;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.crafting.CardPuncherBlock;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlock;
 import com.fatwednesday.paperpunchcards.readers.TapePlayerBlock;

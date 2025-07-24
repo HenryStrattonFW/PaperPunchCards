@@ -8,7 +8,11 @@
   "item.paperpunchcards.punch_card_item": "Punch Card",
   "item.paperpunchcards.paper_tape_item": "Paper Tape",
 
+  "menu.button.paperpunchcards.confirm": "Confirm",
+
   "paperpunchcards.configuration.title": "Paper Punch Cards Configs",
-  "paperpunchcards.configuration.section.paperpunchcards.common.toml": "Paper Punch Cards Configs",
-  "paperpunchcards.configuration.section.paperpunchcards.common.toml.title": "Paper Punch Cards Configs"
+  "paperpunchcards.configuration.PaperTapePageCount": "Paper Tape Size",
+  "paperpunchcards.configuration.PaperTapePageCount.tooltip" : "Number of signal pages in a Paper Tape",
+  "paperpunchcards.configuration.CardReaderDelayTicks": "Card Reader Delay",
+  "paperpunchcards.configuration.CardReaderDelayTicks.tooltip" : "Number of ticks that the reader will emit a signal for after a valid card is removed"
 }

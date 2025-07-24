@@ -1,17 +1,21 @@
 package com.fatwednesday.paperpunchcards;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config
 {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec.ConfigValue<Integer> PaperTapePageCount;
+    public static final ModConfigSpec.ConfigValue<Integer> CardReaderDelayTicks;
 
-    private static boolean validateItemName(final Object obj)
+    static
     {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
+        var builder = new ModConfigSpec.Builder();
+
+        PaperTapePageCount = builder.define("PaperTapePageCount",4);
+        CardReaderDelayTicks = builder.define("CardReaderDelayTicks",15);
+
+        SPEC = builder.build();
     }
 }

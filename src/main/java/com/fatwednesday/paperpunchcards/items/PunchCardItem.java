@@ -8,4 +8,16 @@ public class PunchCardItem extends Item implements PaperPunchable
     {
         super(properties);
     }
+
+    @Override
+    public boolean showAsCards()
+    {
+        return true;
+    }
+
+    @Override
+    public int pageCount()
+    {
+        return 1;
+    }
 }
