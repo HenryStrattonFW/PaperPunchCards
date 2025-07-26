@@ -1,5 +1,6 @@
 package com.fatwednesday.fatlib.gui.components;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -32,10 +33,10 @@ public class SpriteButton extends Button
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    public void onPress()
     {
+        super.onPress();
         isPressed = true;
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class SpriteButton extends Button
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
     {
         guiGraphics.blitSprite(getDesiredSprite(), getX(), getY(), getWidth(), getHeight());
+        renderString(guiGraphics, Minecraft.getInstance().font, getFGColor());
     }
 
     private ResourceLocation getDesiredSprite()

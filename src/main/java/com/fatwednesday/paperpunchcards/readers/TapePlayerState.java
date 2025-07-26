@@ -19,6 +19,6 @@ public enum TapePlayerState implements StringRepresentable
     @Override
     public @NotNull String getSerializedName()
     {
-        return this.name;
+        return name;
     }
 }

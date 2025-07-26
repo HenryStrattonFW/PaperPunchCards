@@ -9,9 +9,13 @@ import java.util.function.Consumer;
 
 public class SpriteToggle extends Button
 {
+    private static boolean draggingActive;
+    private static boolean draggingState;
+
     private final ResourceLocation normalSprite;
     private final ResourceLocation toggledSprite;
     private final Consumer<Boolean> onStateChanged;
+
     private boolean toggled;
 
     protected SpriteToggle(
@@ -33,6 +37,15 @@ public class SpriteToggle extends Button
     public void onPress()
     {
         setValue(!toggled);
+        draggingState = toggled;
+        draggingActive = true;
+    }
+
+
+    @Override
+    public void onRelease(double mouseX, double mouseY)
+    {
+        draggingActive = false;
     }
 
     public void setValueWithoutNotify(boolean toggled)
@@ -56,6 +69,11 @@ public class SpriteToggle extends Button
                 getX(), getY(),
                 width, height
         );
+
+        if(draggingActive && isHoveredOrFocused() && toggled != draggingState)
+        {
+            setValue(draggingState);
+        }
     }
 
     public static class Builder

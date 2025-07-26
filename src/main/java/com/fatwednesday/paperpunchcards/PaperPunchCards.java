@@ -35,6 +35,7 @@ public class PaperPunchCards
         ModItems.register(modEventBus);
         ModCreativeTab.register(modEventBus);
         ModMenus.register(modEventBus);
+        ModDataComponents.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 

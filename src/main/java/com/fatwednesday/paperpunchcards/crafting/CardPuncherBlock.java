@@ -38,7 +38,7 @@ public class CardPuncherBlock extends Block
     public CardPuncherBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(
+        registerDefaultState(
                 defaultBlockState()
                 .setValue(FACING, Direction.NORTH)
         );
@@ -102,7 +102,6 @@ public class CardPuncherBlock extends Block
                             Component.empty()
                     )
             );
-
         }
         return InteractionResult.SUCCESS;
     }

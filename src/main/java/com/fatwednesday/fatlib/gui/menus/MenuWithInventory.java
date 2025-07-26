@@ -27,7 +27,7 @@ public abstract class MenuWithInventory extends AbstractContainerMenu
         {
             for (var col = 0; col < 9; ++col)
             {
-                this.addSlot(
+                addSlot(
                     new Slot(
                         playerInventory,
                         col + row * 9 + 9,
@@ -41,7 +41,7 @@ public abstract class MenuWithInventory extends AbstractContainerMenu
         // Hotbar
         for (var col = 0; col < 9; ++col)
         {
-            this.addSlot(new Slot(playerInventory, col, x + col * 18, y + 58));
+            addSlot(new Slot(playerInventory, col, x + col * 18, y + 58));
         }
     }
 }

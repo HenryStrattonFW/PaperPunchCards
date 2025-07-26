@@ -40,12 +40,12 @@ public record SignalSequence(byte[] bytes)
 
     public boolean matches(byte[] other)
     {
-        if(other.length != this.bytes.length)
+        if(other.length != bytes.length)
             return false;
 
-        for(var i = 0; i < this.bytes.length; i++)
+        for(var i = 0; i < bytes.length; i++)
         {
-            if(other[i] != this.bytes[i])
+            if(other[i] != bytes[i])
                 return false;
         }
         return true;

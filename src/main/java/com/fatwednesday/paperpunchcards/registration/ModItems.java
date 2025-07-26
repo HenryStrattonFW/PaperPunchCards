@@ -3,12 +3,12 @@ package com.fatwednesday.paperpunchcards.registration;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperTapeItem;
 import com.fatwednesday.paperpunchcards.items.PunchCardItem;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -45,10 +45,9 @@ public class ModItems
         );
     }
 
-    private static float hasDataCondition(ItemStack stack, Level level, Entity entity, int seed)
+    private static float hasDataCondition(ItemStack stack, ClientLevel level, LivingEntity entity, int seed)
     {
         var seq = stack.get(ModDataComponents.SIGNAL_SEQUENCE);
         return (seq == null || seq.isBlank()) ? 0.0f : 1.0f;
-
     }
 }

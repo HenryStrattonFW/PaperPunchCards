@@ -4,6 +4,8 @@ import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -22,4 +24,10 @@ public class ModDataComponents
                         .persistent(SignalSequence.BASIC_CODEC)
                         .networkSynchronized(SignalSequence.BASIC_STREAM_CODEC)
         );
+
+    public static void register(IEventBus modBus)
+    {
+        DATA_COMPONENTS.register(modBus);
+    }
+
 }

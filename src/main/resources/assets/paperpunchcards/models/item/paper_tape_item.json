@@ -6,7 +6,7 @@
   "overrides": [
     {
       "predicate": {
-        "paperpunchcards:has_sequence": 1
+        "paperpunchcards:has_data": 1
       },
       "model": "paperpunchcards:item/paper_tape_item_with_data"
     }

@@ -37,8 +37,8 @@ public class CardReaderBlock extends BaseEntityBlock
     public CardReaderBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(
-                this.defaultBlockState()
+        registerDefaultState(
+                defaultBlockState()
                         .setValue(FACING, Direction.NORTH)
                         .setValue(STATE, CardReaderState.UNSET)
         );

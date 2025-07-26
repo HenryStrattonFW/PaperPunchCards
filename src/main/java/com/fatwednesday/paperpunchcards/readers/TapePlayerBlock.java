@@ -24,8 +24,8 @@ public class TapePlayerBlock extends BaseEntityBlock
     public TapePlayerBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(
-                this.defaultBlockState()
+        registerDefaultState(
+                defaultBlockState()
                         .setValue(FACING, Direction.NORTH)
                         .setValue(STATE, TapePlayerState.EMPTY)
         );
