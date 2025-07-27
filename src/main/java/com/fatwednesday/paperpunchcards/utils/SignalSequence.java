@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+import java.util.Arrays;
 import java.util.Base64;
 
 public record SignalSequence(byte[] bytes)
@@ -20,6 +21,20 @@ public record SignalSequence(byte[] bytes)
             SignalSequence::bytes,
             SignalSequence::new
     );
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof SignalSequence other)) return false;
+        return matches(other.bytes);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Arrays.hashCode(bytes);
+    }
 
     public boolean isBlank()
     {

@@ -41,7 +41,6 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
     private SpriteButton confirmButton;
     private PaperPunchable currentInput;
 
-
     public CardPuncherScreen(CardPuncherMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
@@ -94,6 +93,7 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
                 .withCallback((b) -> onConfirmPressed())
                 .build();
         addRenderableWidget(confirmButton);
+        refreshConfirmButtonState();
     }
 
     private void onToggleChanged(int x, int y, boolean value)
@@ -109,6 +109,8 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
             nibbleValue &= ~(1 << y);
         }
         sequenceData.setNibble(x, nibbleValue);
+
+        refreshConfirmButtonState();
     }
 
     private void configureForCard()
@@ -171,6 +173,12 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         }
         setToggleGridVisible(true);
         currentInput = input;
+        refreshConfirmButtonState();
+    }
+
+    private void refreshConfirmButtonState()
+    {
+        confirmButton.active = menu.canTriggerConfirm();
     }
 
     @Override

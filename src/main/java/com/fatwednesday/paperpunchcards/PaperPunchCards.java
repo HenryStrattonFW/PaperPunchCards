@@ -24,6 +24,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 @Mod(PaperPunchCards.MOD_ID)
 public class PaperPunchCards
 {
+    private static final String LOG_STRING = "[paperpunchcards] %s";
     public static final String MOD_ID = "paperpunchcards";
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -41,7 +42,6 @@ public class PaperPunchCards
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
     }
 
     public static ResourceLocation getResource(String path)
@@ -49,14 +49,19 @@ public class PaperPunchCards
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    public static String getTag(String tag)
+    {
+        return ("%s:%s").formatted(MOD_ID, tag);
+    }
+
     public static void log(String message)
     {
-        LOGGER.info("[%s] %s".formatted(MOD_ID, message));
+        LOGGER.info(LOG_STRING.formatted(message));
     }
 
     public static void error(String message)
     {
-        LOGGER.error("[%s] %s".formatted(MOD_ID, message));
+        LOGGER.error(LOG_STRING.formatted(message));
     }
 
     private void commonSetup(FMLCommonSetupEvent event)

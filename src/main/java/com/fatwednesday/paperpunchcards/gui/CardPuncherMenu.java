@@ -6,7 +6,7 @@ import com.fatwednesday.fatlib.gui.components.OutputSlot;
 import com.fatwednesday.fatlib.gui.menus.MenuWithInventory;
 import com.fatwednesday.fatlib.utils.LogoutItemGuard;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
-import com.fatwednesday.paperpunchcards.registration.ModItems;
+import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
@@ -15,7 +15,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+
 
 public class CardPuncherMenu extends MenuWithInventory
 {
@@ -41,6 +41,7 @@ public class CardPuncherMenu extends MenuWithInventory
         addSlot(inputSlot);
 
         outputSlot = new OutputSlot(container, 1, 208, 96);
+        outputSlot.setChangeListener(this::outputSlotChanged);
         addSlot(outputSlot);
 
         CreateInventorySlots(playerInventory, 64, 142);
@@ -95,22 +96,42 @@ public class CardPuncherMenu extends MenuWithInventory
 
     private void inputSlotChanged(ObservableSlot slot)
     {
-        var stack = slot.getItem();
-        var item = stack.getItem();
-        var inputItem = (item instanceof PaperPunchable punchable)
-                ? punchable
-                : null;
+        var data = getInputAsPunchable();
 
         LogoutItemGuard.clear(player);
-        if(inputItem != null)
+        if(data.punchable != null)
         {
-            LogoutItemGuard.queue(player, stack);
+            LogoutItemGuard.queue(player, data.stack);
         }
 
         if(changeListener != null)
         {
-            changeListener.inputChanged(inputItem);
+            changeListener.inputChanged(data.punchable);
         }
+    }
+
+    private void outputSlotChanged(ObservableSlot slot)
+    {
+        // We're only using this to refresh the screen when output is cleared.
+        // so ignore if it's not empty. Should really do this properly instead
+        // of piggybacking on the input change event... but for now, screw it.
+        if(!slot.getItem().isEmpty())
+            return;
+
+        if(changeListener != null)
+        {
+            var data = getInputAsPunchable();
+            changeListener.inputChanged(data.punchable);
+        }
+    }
+
+    private PunchableResult getInputAsPunchable()
+    {
+        var stack = inputSlot.getItem();
+        var item = stack.getItem();
+        return (item instanceof PaperPunchable punchable)
+                ? new PunchableResult(stack, punchable)
+                : new PunchableResult(stack, null);
     }
 
     public void setChangeListener(InputChangeListener listener)
@@ -123,11 +144,31 @@ public class CardPuncherMenu extends MenuWithInventory
         return sequenceData;
     }
 
-    public void tryCreatePunchCard(int containerId, byte[] bytes)
+    public boolean canTriggerConfirm()
     {
-        if(this.containerId != containerId)
-            return;
+        if(sequenceData.isEmpty())
+            return false;
 
+        if(!inputSlot.hasItem())
+            return false;
+
+        if(outputSlot.hasItem())
+        {
+            var inStack = inputSlot.getItem();
+            var outStack = outputSlot.getItem();
+            if(!inStack.is(outStack.getItem()))
+                return false;
+
+            var outSeq = outStack.get(ModDataComponents.SIGNAL_SEQUENCE);
+            if(outSeq == null)
+                return false;
+            return outSeq.matches(sequenceData.bytes());
+        }
+        return true;
+    }
+
+    public void tryCreateOutput(byte[] bytes)
+    {
         if(player.level().isClientSide())
             return;
 
@@ -135,22 +176,22 @@ public class CardPuncherMenu extends MenuWithInventory
         if (inputStack.isEmpty())
             return;
 
-        container.removeItem(inputSlot.index, 1);
-
         var output = container.getItem(outputSlot.index);
         if(output.isEmpty())
         {
-            output = new ItemStack(ModItems.PUNCH_CARD_ITEM.get(), 1);
+            output = inputStack.copy();
+            output.setCount(1);
+
+            PaperPunchable.createAssignment()
+                    .withSequence(new SignalSequence(bytes))
+                    .withStack(output)
+                    .assign();
         }
         else
         {
             output.grow(1);
         }
-
-        PaperPunchable.createAssignment()
-                .withSequence(new SignalSequence(bytes))
-                .withStack(output)
-                .assign();
+        container.removeItem(inputSlot.index, 1);
 
         outputSlot.set(output);
 
@@ -162,7 +203,7 @@ public class CardPuncherMenu extends MenuWithInventory
     }
 
     @Override
-    public void removed(@NotNull Player player)
+    public void removed(Player player)
     {
         super.removed(player);
 
@@ -183,4 +224,6 @@ public class CardPuncherMenu extends MenuWithInventory
     {
         void inputChanged(PaperPunchable input);
     }
+
+    private record PunchableResult(ItemStack stack, PaperPunchable punchable){}
 }

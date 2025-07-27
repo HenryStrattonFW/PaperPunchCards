@@ -36,9 +36,9 @@ public record CardPunchMenuCreatePayload(int containerId, byte[] bytes) implemen
         context.enqueueWork(() ->
         {
             var player = context.player();
-            if (player.containerMenu instanceof CardPuncherMenu menu)
+            if (player.containerMenu instanceof CardPuncherMenu menu && menu.containerId == payload.containerId)
             {
-                menu.tryCreatePunchCard(payload.containerId, payload.bytes);
+                menu.tryCreateOutput(payload.bytes);
             }
         });
     }
