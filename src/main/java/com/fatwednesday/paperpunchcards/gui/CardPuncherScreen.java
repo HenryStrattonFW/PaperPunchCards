@@ -84,7 +84,7 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         }
 
         confirmButton = new SpriteButton.Builder()
-                .withLabel(Component.translatable("menu.button.paperpunchcards.confirm"))
+                .withLabel(PaperPunchCards.getTranslation("menu.button.confirm"))
                 .withBounds(leftPos + 112, topPos + 96, 64, 16)
                 .withNormalSprite(PaperPunchCards.getResource("button_normal"))
                 .withFocusedSprite(PaperPunchCards.getResource("button_hovered"))

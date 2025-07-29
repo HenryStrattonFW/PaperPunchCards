@@ -1,6 +1,4 @@
 {
-  "itemGroup.paperpunchcards": "Paper Punch Cards",
-
   "block.paperpunchcards.tape_player_block": "Tape Player",
   "block.paperpunchcards.card_reader_block": "Card Reader",
   "block.paperpunchcards.card_puncher_block": "Card Puncher",
@@ -8,7 +6,13 @@
   "item.paperpunchcards.punch_card_item": "Punch Card",
   "item.paperpunchcards.paper_tape_item": "Paper Tape",
 
-  "menu.button.paperpunchcards.confirm": "Confirm",
+  "paperpunchcards.creative_tab": "Paper Punch Cards",
+  "paperpunchcards.menu.button.confirm": "Confirm",
+
+  "paperpunchcards.message.reader_not_configured": "Reader is not configured",
+  "paperpunchcards.message.reader_failed": "Reader owned by another player",
+  "paperpunchcards.message.reader_succeeded": "New sequence assigned",
+  "paperpunchcards.message.reader_cleared": "Reader reset",
 
   "paperpunchcards.configuration.title": "Paper Punch Cards Configs",
   "paperpunchcards.configuration.PaperTapePageCount": "Paper Tape Size",

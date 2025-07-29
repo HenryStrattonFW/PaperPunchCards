@@ -19,7 +19,7 @@ public class ModCreativeTab
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register(
             "paperpunchcards_tab",
             ()->CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.paperpunchcards"))
+                    .title(PaperPunchCards.getTranslation("creative_tab"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(()->ModItems.TAPE_PLAYER_BLOCK_ITEM.get().getDefaultInstance())
                     .displayItems((parameters, output)->{

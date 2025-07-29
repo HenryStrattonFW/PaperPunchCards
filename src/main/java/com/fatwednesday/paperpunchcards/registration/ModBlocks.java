@@ -3,6 +3,7 @@ package com.fatwednesday.paperpunchcards.registration;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.crafting.CardPuncherBlock;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlock;
+import com.fatwednesday.paperpunchcards.readers.CardReaderBlockEntity;
 import com.fatwednesday.paperpunchcards.readers.TapePlayerBlock;
 import com.fatwednesday.paperpunchcards.readers.TapePlayerBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -47,10 +48,19 @@ public class ModBlocks
 
     public static final Supplier<BlockEntityType<TapePlayerBlockEntity>> TAPE_PLAYER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register(
-            "tape_player_block_entity",() ->
+                    "tape_player_block_entity",() ->
                             BlockEntityType.Builder.of(
                                     TapePlayerBlockEntity::new,
                                     ModBlocks.TAPE_PLAYER_BLOCK.get()
+                            ).build(null)
+            );
+
+    public static final Supplier<BlockEntityType<CardReaderBlockEntity>> CARD_READER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register(
+                    "card_reader_block_entity",() ->
+                            BlockEntityType.Builder.of(
+                                    CardReaderBlockEntity::new,
+                                    ModBlocks.CARD_READER_BLOCK.get()
                             ).build(null)
             );
 

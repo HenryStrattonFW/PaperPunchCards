@@ -127,7 +127,6 @@ public class TapePlayerBlock extends BaseEntityBlock
         }
     }
 
-
     @Override
     protected boolean isSignalSource(BlockState state)
     {
