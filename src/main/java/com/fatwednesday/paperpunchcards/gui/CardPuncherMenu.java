@@ -5,37 +5,50 @@ import com.fatwednesday.fatlib.gui.components.ObservableSlot;
 import com.fatwednesday.fatlib.gui.components.OutputSlot;
 import com.fatwednesday.fatlib.gui.menus.MenuWithInventory;
 import com.fatwednesday.fatlib.utils.LogoutItemGuard;
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
 import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 
 public class CardPuncherMenu extends MenuWithInventory
 {
     private static final int ContainerSlots = 2;
 
-    private final Container container;
-    private final Player player;
-    private final OutputSlot outputSlot;
-    private final FilterableSlot inputSlot;
-    private final NibbleStore sequenceData = new NibbleStore(20);
+    private Container container;
+    private Player player;
+    private OutputSlot outputSlot;
+    private FilterableSlot inputSlot;
+    // default to something empty even before we have an input.
+    private NibbleStore sequenceData = new NibbleStore(20);
     private InputChangeListener changeListener;
 
-
-    public CardPuncherMenu(int id, Inventory playerInventory)
+    public CardPuncherMenu(int id, Inventory inventory)
     {
         super(ModMenus.CARD_PUNCHER_MENU.get(), id);
+        initMenu(inventory);
+    }
+
+    public void initMenu(Inventory playerInventory)
+    {
         container = new SimpleContainer(ContainerSlots);
         player = playerInventory.player;
 
-        inputSlot = new FilterableSlot(container, 0, 64, 96);
+        inputSlot = new FilterableSlot(container, 0, 64,  96);
         inputSlot.allow(PaperPunchable.class);
         inputSlot.setChangeListener(this::inputSlotChanged);
         addSlot(inputSlot);
@@ -99,13 +112,29 @@ public class CardPuncherMenu extends MenuWithInventory
         var data = getInputAsPunchable();
 
         LogoutItemGuard.clear(player);
+        sequenceData = null;
+
         if(data.punchable != null)
         {
             LogoutItemGuard.queue(player, data.stack);
+
+            if(data.stack.has(ModDataComponents.SIGNAL_SEQUENCE))
+            {
+                var seq = data.stack.get(ModDataComponents.SIGNAL_SEQUENCE);
+                if(seq != null)
+                    sequenceData = new NibbleStore(seq.bytes());
+            }
+            if(sequenceData == null)
+            {
+                sequenceData = new NibbleStore(20 * data.punchable.pageCount());
+            }
         }
 
         if(changeListener != null)
         {
+            //PaperPunchCards.log("Input changed, has sequence: " + (sequenceData != null));
+            //if(sequenceData != null)
+            //    PaperPunchCards.log("Input changed, seq size: " + (sequenceData.size()));
             changeListener.inputChanged(data.punchable);
         }
     }
@@ -146,7 +175,7 @@ public class CardPuncherMenu extends MenuWithInventory
 
     public boolean canTriggerConfirm()
     {
-        if(sequenceData.isEmpty())
+        if(sequenceData == null || sequenceData.isEmpty())
             return false;
 
         if(!inputSlot.hasItem())
@@ -226,4 +255,15 @@ public class CardPuncherMenu extends MenuWithInventory
     }
 
     private record PunchableResult(ItemStack stack, PaperPunchable punchable){}
+
+
+    public static void openMenuForPlayer( Player player)
+    {
+        player.openMenu(
+            new SimpleMenuProvider(
+                (id, inventory, p) -> new CardPuncherMenu(id, inventory),
+                Component.empty()
+            )
+        );
+    }
 }

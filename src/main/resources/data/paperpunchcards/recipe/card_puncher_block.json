@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "WTP",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "T": {
+      "item": "paperpunchcards:paper_tape_item"
+    },
+    "P": {
+      "item": "paperpunchcards:punch_card_item"
+    }
+  },
+  "result": {
+    "id": "paperpunchcards:card_puncher_block",
+    "count": 1
+  }
+}

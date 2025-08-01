@@ -8,6 +8,7 @@
 
   "paperpunchcards.creative_tab": "Paper Punch Cards",
   "paperpunchcards.menu.button.confirm": "Confirm",
+  "paperpunchcards.menu.tape_page": "Page %1$s of %2$s",
 
   "paperpunchcards.message.reader_not_configured": "Reader is not configured",
   "paperpunchcards.message.reader_failed": "Reader owned by another player",

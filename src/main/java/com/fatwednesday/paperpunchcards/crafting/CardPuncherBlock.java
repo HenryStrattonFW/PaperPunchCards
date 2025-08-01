@@ -96,12 +96,7 @@ public class CardPuncherBlock extends Block
     {
         if (!level.isClientSide)
         {
-            player.openMenu(
-                    new SimpleMenuProvider(
-                            (id, inventory, p) -> new CardPuncherMenu(id, inventory),
-                            Component.empty()
-                    )
-            );
+            CardPuncherMenu.openMenuForPlayer(player);
         }
         return InteractionResult.SUCCESS;
     }

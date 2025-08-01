@@ -60,6 +60,11 @@ public class PaperPunchCards
         return Component.translatable("%s.%s".formatted(MOD_ID, key));
     }
 
+    public static Component getTranslationFormatted(String key, Object... args)
+    {
+        return Component.translatable("%s.%s".formatted(MOD_ID, key), args);
+    }
+
     public static void log(String message)
     {
         LOGGER.info(LOG_STRING.formatted(message));

@@ -43,7 +43,7 @@ public class CardReaderBlock extends BaseEntityBlock
     public static final EnumProperty<CardReaderState> STATE = EnumProperty.create("state", CardReaderState.class);
     private static final int PLACEMENT_FLAGS = PlacementUtils.ALLOW_HORIZONTAL | PlacementUtils.REQUIRE_STURDY;
     private static final DirectionalVoxelShape SHAPE = new DirectionalVoxelShape(
-            Block.box(2, 2, 0, 14, 14, 3),
+            Block.box(2, 2, 0, 14, 14, 5),
             Direction.NORTH,
             Direction.EAST,
             Direction.SOUTH,

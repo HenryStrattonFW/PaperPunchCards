@@ -3,6 +3,7 @@ package com.fatwednesday.paperpunchcards.gui;
 import com.fatwednesday.fatlib.gui.components.GuiTexture;
 import com.fatwednesday.fatlib.gui.components.SpriteButton;
 import com.fatwednesday.fatlib.gui.components.SpriteToggle;
+import com.fatwednesday.fatlib.gui.utils.Utils;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
 import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuCreatePayload;
@@ -39,7 +40,10 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
 
     private final ArrayList<SpriteToggle> toggleGrid = new ArrayList<>();
     private SpriteButton confirmButton;
+    private SpriteButton prevPageButton;
+    private SpriteButton nextPageButton;
     private PaperPunchable currentInput;
+    private int currentPage;
 
     public CardPuncherScreen(CardPuncherMenu menu, Inventory playerInventory, Component title)
     {
@@ -47,6 +51,15 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         imageWidth = BG_TEXTURE.width();
         imageHeight = BG_TEXTURE.height() + SPACING + INV_TEXTURE.height();
         currentInput = null;
+    }
+
+    private int halfWidth()
+    {
+        return (imageWidth / 2);
+    }
+    private int centerX()
+    {
+        return leftPos + halfWidth();
     }
 
     @Override
@@ -83,7 +96,8 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
             }
         }
 
-        confirmButton = new SpriteButton.Builder()
+        confirmButton = addRenderableWidget(
+            new SpriteButton.Builder()
                 .withLabel(PaperPunchCards.getTranslation("menu.button.confirm"))
                 .withBounds(leftPos + 112, topPos + 96, 64, 16)
                 .withNormalSprite(PaperPunchCards.getResource("button_normal"))
@@ -91,15 +105,37 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
                 .withDisabledSprite(PaperPunchCards.getResource("button_disabled"))
                 .withPressedSprite(PaperPunchCards.getResource("button_pressed"))
                 .withCallback((b) -> onConfirmPressed())
-                .build();
-        addRenderableWidget(confirmButton);
+                .build()
+        );
+
+        prevPageButton = addRenderableWidget(
+            new SpriteButton.Builder()
+                .withLabel(Component.empty())
+                .withNormalSprite(PaperPunchCards.getResource("paper_arrow_left_normal"))
+                .withPressedSprite(PaperPunchCards.getResource("paper_arrow_left_pressed"))
+                .withBounds(centerX() - 64,topPos + 18,12,10)
+                .withCallback((b)->changePage(-1))
+                .build()
+        );
+
+        nextPageButton = addRenderableWidget(
+            new SpriteButton.Builder()
+                .withLabel(Component.empty())
+                .withNormalSprite(PaperPunchCards.getResource("paper_arrow_right_normal"))
+                .withPressedSprite(PaperPunchCards.getResource("paper_arrow_right_pressed"))
+                .withBounds(centerX() + 64,topPos + 18,12,10)
+                .withCallback((b)->changePage(1))
+                .build()
+        );
+
         refreshConfirmButtonState();
     }
 
     private void onToggleChanged(int x, int y, boolean value)
     {
         var sequenceData = menu.sequenceData();
-        var nibbleValue = sequenceData.getNibble(x);
+        var nibbleIndex = (currentPage * 20) + x;
+        var nibbleValue = sequenceData.getNibble(nibbleIndex);
         if (value)
         {
             nibbleValue |= (1 << y);
@@ -108,22 +144,22 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         {
             nibbleValue &= ~(1 << y);
         }
-        sequenceData.setNibble(x, nibbleValue);
+        sequenceData.setNibble(nibbleIndex, nibbleValue);
 
         refreshConfirmButtonState();
     }
 
     private void configureForCard()
     {
-        configureTogglePositions(leftPos + 49, topPos + 34, 10, 10);
+        configureToggles(leftPos + 49, topPos + 34, 10, 10);
     }
 
     private void configureForTape()
     {
-        configureTogglePositions(leftPos + 44, topPos + 34, 10, 10);
+        configureToggles(leftPos + 44, topPos + 34, 10, 10);
     }
 
-    private void configureTogglePositions(int left, int top, int xSpacing, int ySpacing)
+    private void configureToggles(int left, int top, int xSpacing, int ySpacing)
     {
         for (var x = 0; x < 20; x++)
         {
@@ -132,6 +168,22 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
                 var idx = y + (x * 4);
                 var toggle = toggleGrid.get(idx);
                 toggle.setPosition(left + (x * xSpacing), top + (y * ySpacing));
+            }
+        }
+    }
+
+    private void matchToggleStatesToData()
+    {
+        var data = menu.sequenceData();
+        var pageOffset = currentPage * 20;
+        for (var x = 0; x < 20; x++)
+        {
+            for (var y = 0; y < 4; y++)
+            {
+                var nibble = data.getNibble(pageOffset + x);
+                var idx = y + (x * 4);
+                var toggle = toggleGrid.get(idx);
+                toggle.setValueWithoutNotify((nibble & (1 << y)) != 0);
             }
         }
     }
@@ -157,28 +209,44 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
 
     private void onMenuInputChanged(PaperPunchable input)
     {
-        if (input == null)
-        {
-            currentInput = null;
-            setToggleGridVisible(false);
-            return;
-        }
-        if (input.showAsCards())
-        {
-            configureForCard();
-        }
-        else
-        {
-            configureForTape();
-        }
-        setToggleGridVisible(true);
         currentInput = input;
+        currentPage = 0;
+        if (input != null)
+        {
+            if (input.showAsCards())
+            {
+                configureForCard();
+            }
+            else
+            {
+                configureForTape();
+            }
+            matchToggleStatesToData();
+        }
+        setToggleGridVisible(input != null);
         refreshConfirmButtonState();
     }
 
     private void refreshConfirmButtonState()
     {
         confirmButton.active = menu.canTriggerConfirm();
+        if(currentInput == null || currentInput.showAsCards())
+        {
+            prevPageButton.visible = false;
+            nextPageButton.visible = false;
+        }
+        else
+        {
+            prevPageButton.visible = currentPage > 0;
+            nextPageButton.visible = currentPage < currentInput.pageCount()-1;
+        }
+    }
+
+    private void changePage(int delta)
+    {
+        currentPage = Math.clamp(currentPage + delta, 0, currentInput.pageCount()-1);
+        refreshConfirmButtonState();
+        matchToggleStatesToData();
     }
 
     @Override
@@ -186,6 +254,7 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
     {
         BG_TEXTURE.blit(guiGraphics, leftPos, topPos);
         INV_TEXTURE.blit(guiGraphics, leftPos + 56, topPos + 124);
+
         if (currentInput == null)
         {
             return;
@@ -204,5 +273,21 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
     {
         graphics.drawString(font, playerInventoryTitle, 64, imageHeight - 102, 0x404040, false);
+        if (currentInput != null && !currentInput.showAsCards())
+        {
+            Utils.drawCenteredLabel(
+                    graphics,
+                    font,
+                    PaperPunchCards.getTranslationFormatted(
+                            "menu.tape_page",
+                            currentPage + 1,
+                            currentInput.pageCount()
+                    ),
+                    halfWidth(),
+                    20,
+                    0x746558,
+                    false
+            );
+        }
     }
 }
