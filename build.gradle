@@ -19,6 +19,7 @@ group = mod_group_id
 
 repositories {
     // Add here additional repositories if required by some of the dependencies below.
+    maven{ url = "https://maven.blamejared.com" }
 }
 
 base {
@@ -133,6 +134,8 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    runtimeOnly "vazkii.patchouli:Patchouli:1.21-88-NEOFORGE"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
