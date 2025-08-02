@@ -1,1 +1,0 @@
-"D:\SteamLibrary\steamapps\common\Aseprite\Aseprite.exe" -b "./Source.aseprite" --scale 1 --save-as "../src/main/resources/assets/paperpunchcards/textures/{slice}.png"
