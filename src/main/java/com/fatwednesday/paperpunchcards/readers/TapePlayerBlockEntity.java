@@ -144,6 +144,10 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
             if(parsed.isPresent())
             {
                 currentItem = parsed.get();
+                var seq = currentItem.get(ModDataComponents.SIGNAL_SEQUENCE);
+                sequence = seq == null
+                        ? new NibbleStore(20)
+                        : new NibbleStore(seq.bytes());
                 setChanged();
                 return;
             }

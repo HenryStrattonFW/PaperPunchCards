@@ -1,25 +1,20 @@
+# Paper Punch Cards
 
-Installation information
-=======
+My first proper minecraft mod, aimed at adding paper punch cards, and paper tapes tothe game as a mechanism for triggering/controlling redstone signals.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Punch Cards
+Punch cards, used in conjunction with the Card Reader can provide a sort of password protection/ID card. A sequence can be punched into a card, which can be assigned to a card reader. Once set, placing a card with a matching sequence on it into the reader will provide power,this signal will persist until shortly after the player removes the card (can be configured)
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+Crouch + Right Click whilst holding a punch card to program the reader. Using a blank card will reset the reader.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+Right click whilst holding a punch card to place it in the reader.
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+![CardReader](./images/card_reader.png)
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+## Paper Tapes
+Paper Tapes are just longer punch cards really. Storing a sequence of data 4 times the size of a punch card (can be configured). Paper tapes can be placed into a Tape Reader which, when powered, will read the paper tape, outputting a redstone signal via comparator matching the sequences strength and durations. Allowing you to coordinate sequences of redstone pulses of varying strength in a small compact manner.
+
+Simply right-click a paper tape into a reader and power it to start playing out the data.
+
+
+![TapePlayer](./images/tape_player.png)
