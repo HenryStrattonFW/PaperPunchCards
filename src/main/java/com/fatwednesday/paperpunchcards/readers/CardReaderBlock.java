@@ -9,7 +9,8 @@ import com.fatwednesday.paperpunchcards.registration.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -33,8 +35,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class CardReaderBlock extends BaseEntityBlock
 {
@@ -255,5 +258,19 @@ public class CardReaderBlock extends BaseEntityBlock
                     true
             );
         }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston)
+    {
+        if (!state.is(newState.getBlock()))
+        {
+            var blockentity = level.getBlockEntity(pos);
+            if (blockentity instanceof CardReaderBlockEntity cardReader)
+            {
+                Containers.dropContents(level, pos, NonNullList.of(ItemStack.EMPTY, cardReader.getItem()));
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 }

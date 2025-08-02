@@ -114,6 +114,11 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         return toReturn;
     }
 
+    public ItemStack getItem()
+    {
+        return currentItem;
+    }
+
     public boolean isConfigured()
     {
         return cachedState != CardReaderState.UNSET;

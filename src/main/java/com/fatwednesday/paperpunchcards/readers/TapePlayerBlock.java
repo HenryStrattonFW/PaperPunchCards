@@ -5,6 +5,8 @@ import com.fatwednesday.paperpunchcards.registration.ModItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -177,5 +179,19 @@ public class TapePlayerBlock extends BaseEntityBlock
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction)
     {
         return false;
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston)
+    {
+        if (!state.is(newState.getBlock()))
+        {
+            var blockentity = level.getBlockEntity(pos);
+            if (blockentity instanceof TapePlayerBlockEntity tapePlayer)
+            {
+                Containers.dropContents(level, pos, NonNullList.of(ItemStack.EMPTY, tapePlayer.getItem()));
+            }
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 }

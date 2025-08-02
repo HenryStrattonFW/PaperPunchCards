@@ -116,6 +116,11 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         return toReturn;
     }
 
+    public ItemStack getItem()
+    {
+        return currentItem;
+    }
+
     public boolean hasItem()
     {
         return !currentItem.isEmpty();
