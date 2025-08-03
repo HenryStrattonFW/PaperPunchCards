@@ -225,7 +225,6 @@ public class CardReaderBlock extends BaseEntityBlock
             var facing = state.getValue(FACING);
             var targetPos = pos.relative(facing);
             level.updateNeighborsAtExceptFromFacing(targetPos, state.getBlock(), facing.getOpposite());
-            //level.blockUpdated(targetPos, state.getBlock());
         }
     }
 

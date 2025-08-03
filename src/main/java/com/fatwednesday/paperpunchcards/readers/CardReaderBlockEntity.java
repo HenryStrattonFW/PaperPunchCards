@@ -162,22 +162,21 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         {
             var seq = tag.getByteArray(SequenceTag);
             bakedSequence = new SignalSequence(seq);
+            cachedState = CardReaderState.EMPTY;
         }
         if(tag.contains(PunchCardTag))
         {
             var parsed = ItemStack.parse(registries, tag.getCompound(PunchCardTag));
             if(parsed.isPresent())
             {
-                currentItem = parsed.get();
-                setChanged();
-                return;
+                setItem(parsed.get());
             }
             else
             {
                 PaperPunchCards.error("Failed to parse PunchCard data.");
             }
         }
-        currentItem = ItemStack.EMPTY;
+        setChanged();
     }
 
     @Override
