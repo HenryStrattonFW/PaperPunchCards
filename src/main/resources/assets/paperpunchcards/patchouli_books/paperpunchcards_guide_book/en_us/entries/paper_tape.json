@@ -1,0 +1,15 @@
+{
+  "name": "Paper Tape",
+  "icon": "paperpunchcards:paper_tape_item",
+  "category": "paperpunchcards:pamphlet_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Similar to the $(PunchCard), a paper tape can have a sequence assigned via the $(CardPuncher).$(br)Paper Tapes do have several pages though, allowing larger sequences.$(br)Unlike cards however, $(PaperTape) items are used with the $(TapePlayer) block."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "paperpunchcards:paper_tape_item"
+    }
+  ]
+}

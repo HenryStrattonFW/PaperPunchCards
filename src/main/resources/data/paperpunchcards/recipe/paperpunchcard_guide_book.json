@@ -1,0 +1,12 @@
+{
+  "type": "patchouli:shapeless_book_recipe",
+  "ingredients": [
+    {
+      "item": "paperpunchcards:punch_card_item"
+    },
+    {
+      "item": "minecraft:book"
+    }
+  ],
+  "book": "paperpunchcard_guide_book"
+}

@@ -8,7 +8,7 @@
   ],
   "key": {
     "#": {
-      "tag": "minecraft:stone"
+      "tag": "minecraft:stone_crafting_materials"
     },
     "C": {
       "item": "minecraft:copper_ingot"

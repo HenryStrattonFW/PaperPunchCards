@@ -1,0 +1,15 @@
+{
+  "name": "Tape Player",
+  "icon": "paperpunchcards:tape_player_block",
+  "category": "paperpunchcards:pamphlet_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(TapePlayer) allows for playback of the signal sequence stored on a $(PaperTape).$(br)When powered, the player will output the encoded signal strengths in sequence of the inserted tape. This can be read by a comparator from the output face.$(br)This playback will loop indefinitely, alternative modes may be added later."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "paperpunchcards:tape_player_block"
+    }
+  ]
+}
