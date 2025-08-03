@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,11 +23,14 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
 {
     private static final String TickCounterTag = PaperPunchCards.getTag("tick_counter");
     private static final String PaperTapeTag = PaperPunchCards.getTag("paper_tape");
+    private static final String ModeTag = PaperPunchCards.getTag("player_mode");
+    private static final String PoweredTag = PaperPunchCards.getTag("powered");
 
     private ItemStack currentItem = ItemStack.EMPTY;
     private NibbleStore sequence;
-    private int tickCounter = 0;
+    private int tickCounter = -1;
     private boolean hasPower = false;
+    private TapePlayerMode mode = TapePlayerMode.LOOP;
 
     public TapePlayerBlockEntity(BlockPos pos, BlockState state)
     {
@@ -38,29 +42,55 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         if(blockEntity.currentItem.isEmpty())
             return;
 
+        var prevHadPower = blockEntity.hasPower;
+        var prevSignal = blockEntity.getSignalStrength();
         var currentlyPowered = level.hasNeighborSignal(pos);
-        if(currentlyPowered != blockEntity.hasPower)
+        var mode = blockEntity.mode;
+
+        if(currentlyPowered)
         {
-            // reset counter when power lost.
-            if(!currentlyPowered)
+            switch (mode)
             {
-                blockEntity.tickCounter = 0;
-                level.updateNeighborsAt(pos, state.getBlock());
+                case LOOP:
+                    blockEntity.tickCounter++;
+                    if(blockEntity.tickCounter >= blockEntity.sequence.size())
+                    {
+                        blockEntity.tickCounter = 0;
+                    }
+                    break;
+
+                case PLAY_ONCE:
+                    if (blockEntity.tickCounter < blockEntity.sequence.size())
+                    {
+                        blockEntity.tickCounter++;
+                    }
+                    break;
+
+                case STEP:
+                    if (!prevHadPower)
+                    {
+                        blockEntity.tickCounter++;
+                        if(blockEntity.tickCounter >= blockEntity.sequence.size())
+                        {
+                            blockEntity.tickCounter = 0;
+                        }
+                    }
+                    break;
             }
+        }
+        else if(prevHadPower && mode != TapePlayerMode.STEP)
+        {
+            blockEntity.tickCounter = -1;
+        }
+
+        var newSignal = blockEntity.getSignalStrength();
+        if(prevHadPower != currentlyPowered || prevSignal != newSignal)
+        {
             blockEntity.hasPower = currentlyPowered;
             blockEntity.setChanged();
+            level.updateNeighborsAt(pos, state.getBlock());
             TapePlayerBlock.refreshState(level, pos);
         }
-
-        if(!currentlyPowered || blockEntity.sequence == null)
-            return;
-
-        blockEntity.tickCounter++;
-        if(blockEntity.tickCounter >= blockEntity.sequence.size())
-        {
-            blockEntity.tickCounter = 0;
-        }
-        level.updateNeighborsAt(pos, state.getBlock());
     }
 
     public int getSignalStrength()
@@ -68,10 +98,24 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         if(currentItem.isEmpty() || !hasPower || sequence == null)
             return 0;
 
-        var wrapped = tickCounter % sequence.size();
-        return sequence.getNibble(wrapped);
+        var index = mode == TapePlayerMode.PLAY_ONCE
+                ? Math.clamp(tickCounter, 0, sequence.size()-1)
+                : tickCounter % sequence.size();
+        return sequence.getNibble(index);
     }
 
+    public void cycleMode(Player player)
+    {
+        mode = mode.cycle();
+        setChanged();
+        if(player != null)
+        {
+            player.displayClientMessage(
+                    mode.getMessage(),
+                    true
+            );
+        }
+    }
 
     @Override
     public void clearContent()
@@ -132,6 +176,8 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
     {
         super.saveAdditional(tag, registries);
         tag.putInt(TickCounterTag, tickCounter);
+        tag.putString(ModeTag, mode.toString());
+        tag.putBoolean(PoweredTag, hasPower);
         if(!currentItem.isEmpty())
         {
             tag.put(PaperTapeTag, currentItem.save(registries, new CompoundTag()));
@@ -143,6 +189,11 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
     {
         super.loadAdditional(tag, registries);
         tickCounter = tag.getInt(TickCounterTag);
+        hasPower = tag.getBoolean(PoweredTag);
+        if(tag.contains(ModeTag))
+        {
+            mode = TapePlayerMode.tryGetValue(tag.getString(ModeTag), TapePlayerMode.LOOP);
+        }
         if(tag.contains(PaperTapeTag))
         {
             var parsed = ItemStack.parse(registries, tag.getCompound(PaperTapeTag));
