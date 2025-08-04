@@ -24,11 +24,12 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
 {
     private static final String PunchCardTag = PaperPunchCards.getTag("punch_card");
     private static final String SequenceTag = PaperPunchCards.getTag("signal_sequence");
+    private static final String ResidualTag = PaperPunchCards.getTag("residualTicks");
 
     private ItemStack currentItem = ItemStack.EMPTY;
     private CardReaderState cachedState;
     private SignalSequence bakedSequence;
-    private int risidualSignalTicks;
+    private int residualSignalTicks;
 
     public CardReaderBlockEntity(BlockPos pos, BlockState blockState)
     {
@@ -47,10 +48,10 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CardReaderBlockEntity blockEntity)
     {
-        if(blockEntity.risidualSignalTicks > 0)
+        if(blockEntity.residualSignalTicks > 0)
         {
-            blockEntity.risidualSignalTicks--;
-            if(blockEntity.risidualSignalTicks <= 0)
+            blockEntity.residualSignalTicks--;
+            if(blockEntity.residualSignalTicks <= 0)
             {
                 CardReaderBlock.refreshState(level, pos);
             }
@@ -104,7 +105,7 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
     {
         if(cachedState == CardReaderState.GOOD)
         {
-            risidualSignalTicks = Config.CardReaderDelayTicks.get();
+            residualSignalTicks = Config.CardReaderDelayTicks.get();
         }
         var toReturn = currentItem;
         currentItem = ItemStack.EMPTY;
@@ -136,7 +137,7 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
 
     public boolean shouldOutputSignal()
     {
-        return cachedState ==  CardReaderState.GOOD || risidualSignalTicks > 0;
+        return cachedState ==  CardReaderState.GOOD || residualSignalTicks > 0;
     }
 
 
@@ -152,6 +153,7 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         {
             tag.put(PunchCardTag, currentItem.save(registries, new CompoundTag()));
         }
+        tag.putInt(ResidualTag, residualSignalTicks);
     }
 
     @Override
@@ -164,6 +166,10 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             bakedSequence = new SignalSequence(seq);
             cachedState = CardReaderState.EMPTY;
         }
+        else
+        {
+            cachedState = CardReaderState.UNSET;
+        }
         if(tag.contains(PunchCardTag))
         {
             var parsed = ItemStack.parse(registries, tag.getCompound(PunchCardTag));
@@ -175,6 +181,11 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             {
                 PaperPunchCards.error("Failed to parse PunchCard data.");
             }
+        }
+        else
+        {
+            // Only care about residual ticks if we don't have a card.
+            residualSignalTicks = tag.getInt(ResidualTag);
         }
         setChanged();
     }
