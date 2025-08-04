@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The humble $(PunchCard) is a simple item that can contain a sequence of 20 values, from 0 to 15.$(br)These sequences can be assigned using the $(CardPuncher)"
+      "text": "The humble $(item)Punch Card$() is a simple item that can contain a sequence of 20 values, from 0 to 15.$(br)These sequences can be assigned using the $(l:card_puncher)Card Puncher$().$(br)These cards are then used to program and activate the $(l:card_reader)Card Reader$()"
     },
     {
       "type": "patchouli:crafting",

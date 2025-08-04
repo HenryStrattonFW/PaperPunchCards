@@ -1,5 +1,5 @@
 {
-  "type": "patchouli:shapeless_book_recipe",
+  "type":"minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "paperpunchcards:punch_card_item"
@@ -8,5 +8,11 @@
       "item": "minecraft:book"
     }
   ],
-  "book": "paperpunchcard_guide_book"
+  "result": {
+    "components": {
+      "patchouli:book": "paperpunchcards:paperpunchcards_guide_book"
+    },
+    "count": 1,
+    "id": "patchouli:guide_book"
+  }
 }

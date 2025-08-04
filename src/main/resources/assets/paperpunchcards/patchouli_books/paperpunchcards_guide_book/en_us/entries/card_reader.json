@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The $(CardReader) is a block that can be configured to a sequence by crouch right clicking it with a $(PunchCard).$(br)Once configured, it will then provide redstone power if a card with a matching sequence is placed in it.$(br)A valid signal will persist for a short time after removing a valid card."
+      "text": "The $(item)Card Reader$() is a block that can be configured to a sequence by crouch right clicking it with a $(l:punch_card)Punch Card$().$(br)Once configured, it will then provide redstone power if a card with a matching sequence is placed in it.$(br)A valid signal will persist for a short time after removing a valid card."
     },
     {
       "type": "patchouli:crafting",

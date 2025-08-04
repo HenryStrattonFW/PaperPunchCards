@@ -1,15 +1,12 @@
 {
-  "name": "Punch It!",
-  "landing_text": "Paper Punch Cards",
+  "name": "paperpunchcards.patchouli.title",
+  "landing_text": "paperpunchcards.patchouli.landing",
   "version": 1,
   "creative_tab": "paperpunchcards:paperpunchcards_tab",
   "use_resource_pack": true,
   "pamphlet": "true",
-  "macros": {
-    "$(CardPuncher)": "$(l:card_puncher)Card Puncher$()",
-    "$(PunchCard)": "$(l:punch_card)Punch Card$()",
-    "$(PaperTape)": "$(l:paper_tape)Paper Tape$()",
-    "$(CardReader)": "$(l:card_reader)Card Reader$()",
-    "$(TapePlayer)": "$(l:tape_player)Tape Player$()"
-  }
+  "book_texture": "patchouli:textures/gui/book_gray.png",
+  "model": "paperpunchcards:paperpunchcards_guide_book",
+  "filler_texture": "paperpunchcards:textures/gui/patchouli_filler",
+  "show_progress": "false"
 }

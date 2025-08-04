@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Similar to the $(PunchCard), a paper tape can have a sequence assigned via the $(CardPuncher).$(br)Paper Tapes do have several pages though, allowing larger sequences.$(br)Unlike cards however, $(PaperTape) items are used with the $(TapePlayer) block."
+      "text": "Similar to the $(l:punch_card)Punch Card$(), a paper tape can have a sequence assigned via the $(l:card_puncher)Card Puncher$().$(br)They do have multiple pages though, allowing larger sequences.$(br)Unlike cards however, $(item)Paper Tape$() items are used with the $(l:tape_player)Tape Player$() block."
     },
     {
       "type": "patchouli:crafting",
