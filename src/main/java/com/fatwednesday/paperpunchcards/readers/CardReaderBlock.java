@@ -145,6 +145,11 @@ public class CardReaderBlock extends BaseEntityBlock
         return SHAPE.tryGet(facing).orElseGet(Shapes::empty);
     }
 
+    @Override
+    protected boolean isSignalSource(BlockState state)
+    {
+        return true;
+    }
 
     @Override
     public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side)

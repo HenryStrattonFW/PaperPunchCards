@@ -11,6 +11,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -96,7 +98,6 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         {
             cachedState = CardReaderState.BAD;
         }
-
         CardReaderBlock.refreshState(level, getBlockPos());
         setChanged();
     }

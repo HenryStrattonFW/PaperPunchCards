@@ -157,29 +157,6 @@ public class TapePlayerBlock extends BaseEntityBlock
     }
 
     @Override
-    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction)
-    {
-        return this.getSignal(state, level, pos, direction);
-    }
-
-    @Override
-    protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side)
-    {
-        var front = state.getValue(FACING);
-        if(side != front)
-        {
-            return 0;
-        }
-
-        var blockEntity = blockAccess.getBlockEntity(pos);
-        if(blockEntity instanceof TapePlayerBlockEntity tapePlayer)
-        {
-            return tapePlayer.getSignalStrength();
-        }
-        return 0;
-    }
-
-    @Override
     protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
     {
         var blockEntity = level.getBlockEntity(pos);
@@ -188,12 +165,6 @@ public class TapePlayerBlock extends BaseEntityBlock
             return tapePlayer.getSignalStrength();
         }
         return 0;
-    }
-
-    @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction)
-    {
-        return false;
     }
 
     @Override
