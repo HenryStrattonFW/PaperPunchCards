@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,has_contents=false":  { "model": "paperpunchcards:block/guillotine_block" },
+    "facing=south,has_contents=false":  { "model": "paperpunchcards:block/guillotine_block", "y": 180 },
+    "facing=west,has_contents=false":   { "model": "paperpunchcards:block/guillotine_block", "y": 270 },
+    "facing=east,has_contents=false":   { "model": "paperpunchcards:block/guillotine_block", "y": 90 },
+    "facing=north,has_contents=true":  { "model": "paperpunchcards:block/guillotine_block_full" },
+    "facing=south,has_contents=true":  { "model": "paperpunchcards:block/guillotine_block_full", "y": 180 },
+    "facing=west,has_contents=true":   { "model": "paperpunchcards:block/guillotine_block_full", "y": 270 },
+    "facing=east,has_contents=true":   { "model": "paperpunchcards:block/guillotine_block_full", "y": 90 }
+  }
+}

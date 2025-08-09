@@ -2,6 +2,7 @@ package com.fatwednesday.paperpunchcards.registration;
 
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.crafting.CardPuncherBlock;
+import com.fatwednesday.paperpunchcards.crafting.GuillotineBlock;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlock;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlockEntity;
 import com.fatwednesday.paperpunchcards.readers.TapePlayerBlock;
@@ -28,6 +29,13 @@ public class ModBlocks
     public static final DeferredBlock<Block> CARD_PUNCHER_BLOCK = BLOCKS.registerBlock(
             "card_puncher_block",
             CardPuncherBlock::new,
+            BlockBehaviour.Properties.of()
+                    .strength(1.0f)
+    );
+
+    public static final DeferredBlock<Block> GUILLOTINE_BLOCK = BLOCKS.registerBlock(
+            "guillotine_block",
+            GuillotineBlock::new,
             BlockBehaviour.Properties.of()
                     .strength(1.0f)
     );
@@ -63,7 +71,6 @@ public class ModBlocks
                                     ModBlocks.CARD_READER_BLOCK.get()
                             ).build(null)
             );
-
 
     public static void register(IEventBus modBus)
     {

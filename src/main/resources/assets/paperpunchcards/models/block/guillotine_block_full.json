@@ -1,0 +1,7 @@
+{
+	"format_version": "1.21.6",
+	"parent": "paperpunchcards:block/guillotine_block",
+	"textures": {
+		"0": "paperpunchcards:block/guillotine_block_full"
+	}
+}

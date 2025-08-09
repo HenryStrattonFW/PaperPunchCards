@@ -2,6 +2,7 @@
   "block.paperpunchcards.tape_player_block": "Tape Player",
   "block.paperpunchcards.card_reader_block": "Card Reader",
   "block.paperpunchcards.card_puncher_block": "Card Puncher",
+  "block.paperpunchcards.guillotine_block": "Guillotine",
 
   "item.paperpunchcards.punch_card_item": "Punch Card",
   "item.paperpunchcards.paper_tape_item": "Paper Tape",

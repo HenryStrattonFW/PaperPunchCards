@@ -21,6 +21,7 @@ public class ModItems
     public static final DeferredItem<BlockItem> TAPE_PLAYER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.TAPE_PLAYER_BLOCK);
     public static final DeferredItem<BlockItem> CARD_PUNCHER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.CARD_PUNCHER_BLOCK);
     public static final DeferredItem<BlockItem> CARD_READER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.CARD_READER_BLOCK);
+    public static final DeferredItem<BlockItem> GUILLOTINE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.GUILLOTINE_BLOCK);
 
     public static final DeferredItem<Item> PUNCH_CARD_ITEM = ITEMS.registerItem("punch_card_item", PunchCardItem::new);
     public static final DeferredItem<Item> PAPER_TAPE_ITEM = ITEMS.registerItem("paper_tape_item", PaperTapeItem::new);

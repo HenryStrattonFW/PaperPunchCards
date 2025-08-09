@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " PS",
+    "WWW"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "item": "minecraft:shears"
+    }
+  },
+  "result": {
+    "id": "paperpunchcards:guillotine_block",
+    "count": 1
+  }
+}
