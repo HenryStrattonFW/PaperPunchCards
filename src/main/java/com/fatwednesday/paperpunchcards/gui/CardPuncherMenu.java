@@ -5,24 +5,18 @@ import com.fatwednesday.fatlib.gui.components.ObservableSlot;
 import com.fatwednesday.fatlib.gui.components.OutputSlot;
 import com.fatwednesday.fatlib.gui.menus.MenuWithInventory;
 import com.fatwednesday.fatlib.utils.LogoutItemGuard;
-import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
 import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 
 public class CardPuncherMenu extends MenuWithInventory
@@ -53,7 +47,7 @@ public class CardPuncherMenu extends MenuWithInventory
         inputSlot.setChangeListener(this::inputSlotChanged);
         addSlot(inputSlot);
 
-        outputSlot = new OutputSlot(container, 1, 208, 96);
+        outputSlot = new OutputSlot(container, 1, 208, 96, null);//this::onOutputTaken);
         outputSlot.setChangeListener(this::outputSlotChanged);
         addSlot(outputSlot);
 
@@ -111,30 +105,37 @@ public class CardPuncherMenu extends MenuWithInventory
     {
         var data = getInputAsPunchable();
 
-        LogoutItemGuard.clear(player);
-        sequenceData = null;
-
         if(data.punchable != null)
         {
             LogoutItemGuard.queue(player, data.stack);
 
+            NibbleStore newSeq = null;
             if(data.stack.has(ModDataComponents.SIGNAL_SEQUENCE))
             {
                 var seq = data.stack.get(ModDataComponents.SIGNAL_SEQUENCE);
                 if(seq != null)
-                    sequenceData = new NibbleStore(seq.bytes());
+                    newSeq = new NibbleStore(seq.bytes());
             }
-            if(sequenceData == null)
+            if(newSeq != null)
             {
-                sequenceData = new NibbleStore(20 * data.punchable.pageCount());
+                sequenceData = newSeq;
             }
+            else
+            {
+                var targetSize = 20 * data.punchable.pageCount();
+                if(sequenceData.size() != targetSize)
+                {
+                    sequenceData = new NibbleStore(20 * data.punchable.pageCount());
+                }
+            }
+        }
+        else
+        {
+            sequenceData.clear();
         }
 
         if(changeListener != null)
         {
-            //PaperPunchCards.log("Input changed, has sequence: " + (sequenceData != null));
-            //if(sequenceData != null)
-            //    PaperPunchCards.log("Input changed, seq size: " + (sequenceData.size()));
             changeListener.inputChanged(data.punchable);
         }
     }
