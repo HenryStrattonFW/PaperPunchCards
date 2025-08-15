@@ -16,15 +16,11 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Objects;
 
 public class CardPuncherMenu
         extends MenuWithInventory
@@ -208,37 +204,6 @@ public class CardPuncherMenu
     public NibbleStore sequenceData()
     {
         return sequenceData;
-    }
-
-    public void tryCreateOutput(byte[] bytes)
-    {
-        if(player.level().isClientSide())
-            return;
-
-        var inputStack = container.getItem(inputSlot.index);
-        if (inputStack.isEmpty())
-            return;
-
-        var output = container.getItem(outputSlot.index);
-        if(output.isEmpty())
-        {
-            output = inputStack.copy();
-            output.setCount(1);
-
-            PaperPunchable.createAssignment()
-                    .withSequence(new SignalSequence(bytes))
-                    .withStack(output)
-                    .assign();
-        }
-        else
-        {
-            output.grow(1);
-        }
-        container.removeItem(inputSlot.index, 1);
-
-        outputSlot.set(output);
-        container.setChanged();
-        broadcastChanges();
     }
 
     @Override
