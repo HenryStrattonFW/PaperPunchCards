@@ -58,13 +58,7 @@ public class CardPuncherMenu
         inputSlot.setChangeListener(this::inputSlotChanged);
         addSlot(inputSlot);
 
-        outputSlot = new OutputSlot(container, 1, 208, 96)
-        {
-            public void onTake(Player player, ItemStack stack)
-            {
-                CardPuncherMenu.this.onOutputTaken(player, stack);
-            }
-        };
+        outputSlot = new OutputSlot(container, 1, 208, 96, this::onOutputTaken);
         addSlot(outputSlot);
 
         CreateInventorySlots(playerInventory, 64, 142);
