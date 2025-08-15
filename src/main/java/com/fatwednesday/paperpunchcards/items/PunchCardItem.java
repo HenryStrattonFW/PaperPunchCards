@@ -1,10 +1,20 @@
 package com.fatwednesday.paperpunchcards.items;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlock;
 import com.fatwednesday.paperpunchcards.readers.CardReaderBlockEntity;
+import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
+import com.fatwednesday.paperpunchcards.utils.NibbleStore;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class PunchCardItem extends Item implements PaperPunchable
@@ -49,5 +59,28 @@ public class PunchCardItem extends Item implements PaperPunchable
         }
 
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand)
+    {
+        var stack = player.getItemInHand(usedHand);
+        if(!stack.has(ModDataComponents.SIGNAL_SEQUENCE))
+        {
+            player.displayClientMessage(
+                    Component.literal("No signal data"),
+                    true
+            );
+        }
+        else
+        {
+            var seq = stack.get(ModDataComponents.SIGNAL_SEQUENCE);
+            var nibs = new NibbleStore(seq.bytes());
+            player.displayClientMessage(
+                    Component.literal(nibs.toString()),
+                    true
+            );
+        }
+        return super.use(level, player, usedHand);
     }
 }
