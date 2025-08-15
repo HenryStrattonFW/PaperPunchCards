@@ -4,25 +4,30 @@ import com.fatwednesday.fatlib.gui.components.GuiTexture;
 import com.fatwednesday.fatlib.gui.components.SpriteButton;
 import com.fatwednesday.fatlib.gui.components.SpriteToggle;
 import com.fatwednesday.fatlib.gui.utils.Utils;
+import com.fatwednesday.fatlib.payloads.FatLibMenuRenamePayload;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
-import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuCreatePayload;
+import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuDataPayload;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 
 public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
 {
+    private static final int SPACING = 13;
+
     private static final GuiTexture BG_TEXTURE = new GuiTexture(
             PaperPunchCards.getResource("textures/gui/card_puncher.png"),
             288, 118
     );
-
-    private static final int SPACING = 13;
 
     private static final GuiTexture INV_TEXTURE = new GuiTexture(
             PaperPunchCards.getResource("textures/gui/default_inventory.png"),
@@ -35,28 +40,30 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
     );
     private static final GuiTexture TAPE_TEXTURE = new GuiTexture(
             PaperPunchCards.getResource("textures/gui/paper_tape.png"),
-            240, 71
+            240, 81
     );
 
     private final ArrayList<SpriteToggle> toggleGrid = new ArrayList<>();
-    private SpriteButton confirmButton;
     private SpriteButton prevPageButton;
     private SpriteButton nextPageButton;
-    private PaperPunchable currentInput;
+    private EditBox nameInput;
     private int currentPage;
+    private boolean needToSyncDataChange;
 
     public CardPuncherScreen(CardPuncherMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
         imageWidth = BG_TEXTURE.width();
         imageHeight = BG_TEXTURE.height() + SPACING + INV_TEXTURE.height();
-        currentInput = null;
+        inventoryLabelX = 64;
+        inventoryLabelY = imageHeight - 102;
     }
 
     private int halfWidth()
     {
         return (imageWidth / 2);
     }
+
     private int centerX()
     {
         return leftPos + halfWidth();
@@ -67,15 +74,14 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
     {
         super.init();
 
-        menu.setChangeListener(this::onMenuInputChanged);
+       menu.setChangeListener(this::onMenuInputChanged);
 
         var toggleBuilder = new SpriteToggle.Builder()
                 .withToggledSprite(PaperPunchCards.getResource("toggle_paper_on"))
                 .withNormalSprite(PaperPunchCards.getResource("toggle_paper_off"));
 
         var offsetLeft = leftPos + 49;
-        var offsetTop = topPos + 34;
-
+        var offsetTop = topPos + 42;
         var sequenceData = menu.sequenceData();
         for (var x = 0; x < 20; x++)
         {
@@ -96,43 +102,91 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
             }
         }
 
-        confirmButton = addRenderableWidget(
-            new SpriteButton.Builder()
-                .withLabel(PaperPunchCards.getTranslation("menu.button.confirm"))
-                .withBounds(leftPos + 112, topPos + 96, 64, 16)
-                .withNormalSprite(PaperPunchCards.getResource("button_normal"))
-                .withFocusedSprite(PaperPunchCards.getResource("button_hovered"))
-                .withDisabledSprite(PaperPunchCards.getResource("button_disabled"))
-                .withPressedSprite(PaperPunchCards.getResource("button_pressed"))
-                .withCallback((b) -> onConfirmPressed())
-                .build()
-        );
-
         prevPageButton = addRenderableWidget(
-            new SpriteButton.Builder()
-                .withLabel(Component.empty())
-                .withNormalSprite(PaperPunchCards.getResource("paper_arrow_left_normal"))
-                .withPressedSprite(PaperPunchCards.getResource("paper_arrow_left_pressed"))
-                .withBounds(centerX() - 64,topPos + 18,12,10)
-                .withCallback((b)->changePage(-1))
-                .build()
+                new SpriteButton.Builder()
+                        .withLabel(Component.empty())
+                        .withNormalSprite(PaperPunchCards.getResource("paper_arrow_left_normal"))
+                        .withPressedSprite(PaperPunchCards.getResource("paper_arrow_left_pressed"))
+                        .withBounds(centerX() - 64,topPos + 75,12,10)
+                        .withCallback((b)->changePage(-1))
+                        .build()
         );
 
         nextPageButton = addRenderableWidget(
-            new SpriteButton.Builder()
-                .withLabel(Component.empty())
-                .withNormalSprite(PaperPunchCards.getResource("paper_arrow_right_normal"))
-                .withPressedSprite(PaperPunchCards.getResource("paper_arrow_right_pressed"))
-                .withBounds(centerX() + 64,topPos + 18,12,10)
-                .withCallback((b)->changePage(1))
-                .build()
+                new SpriteButton.Builder()
+                        .withLabel(Component.empty())
+                        .withNormalSprite(PaperPunchCards.getResource("paper_arrow_right_normal"))
+                        .withPressedSprite(PaperPunchCards.getResource("paper_arrow_right_pressed"))
+                        .withBounds(centerX() + 64,topPos + 75,12,10)
+                        .withCallback((b)->changePage(1))
+                        .build()
         );
 
-        refreshConfirmButtonState();
+        nameInput = addRenderableWidget(
+                new EditBox(
+                        this.font,
+                        leftPos + 56, topPos + 9,
+                        103, 12,
+                        Component.literal("Name")
+                )
+        );
+        nameInput.setCanLoseFocus(true);
+        nameInput.setTextColor(0x746558);
+        nameInput.setTextShadow(false);
+        nameInput.setTextColorUneditable(0x746558);
+        nameInput.setBordered(false);
+        nameInput.setMaxLength(25);
+        nameInput.setResponder(this::onNameChanged);
+        nameInput.setValue("");
+
+        updatePageButtonVisibility();
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    {
+        if (keyCode == InputConstants.KEY_ESCAPE)
+        {
+            minecraft.player.closeContainer();
+        }
+
+        return nameInput.keyPressed(keyCode, scanCode, modifiers) ||
+                nameInput.canConsumeInput() ||
+                super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private void onNameChanged(String name)
+    {
+        if(menu.trySetItemName(name))
+        {
+            PacketDistributor.sendToServer(
+                    new FatLibMenuRenamePayload(
+                            menu.containerId,
+                            menu.getItemName()
+                    )
+            );
+        }
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    {
+        if(needToSyncDataChange)
+        {
+            needToSyncDataChange = false;
+            PacketDistributor.sendToServer(
+                    new CardPunchMenuDataPayload(
+                            menu.containerId,
+                            menu.sequenceData().bytes()
+                    )
+            );
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     private void onToggleChanged(int x, int y, boolean value)
     {
+        needToSyncDataChange = true;
         var sequenceData = menu.sequenceData();
         var nibbleIndex = (currentPage * 20) + x;
         var nibbleValue = sequenceData.getNibble(nibbleIndex);
@@ -145,18 +199,20 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
             nibbleValue &= ~(1 << y);
         }
         sequenceData.setNibble(nibbleIndex, nibbleValue);
-
-        refreshConfirmButtonState();
+        menu.trySetSequenceData(sequenceData.bytes());
+        updatePageButtonVisibility();
     }
 
     private void configureForCard()
     {
-        configureToggles(leftPos + 49, topPos + 34, 10, 10);
+        configureToggles(leftPos + 49, topPos + 38, 10, 10);
+        nameInput.setPosition(leftPos + 56, topPos + 9);
     }
 
     private void configureForTape()
     {
-        configureToggles(leftPos + 44, topPos + 34, 10, 10);
+        configureToggles(leftPos + 44, topPos + 30, 10, 10);
+        nameInput.setPosition(leftPos + 56, topPos + 15);
     }
 
     private void configureToggles(int left, int top, int xSpacing, int ySpacing)
@@ -196,24 +252,15 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         }
     }
 
-    private void onConfirmPressed()
+    private void onMenuInputChanged()
     {
-        setFocused(null);
-        PacketDistributor.sendToServer(
-                new CardPunchMenuCreatePayload(
-                        menu.containerId,
-                        menu.sequenceData().bytes()
-                )
-        );
-    }
-
-    private void onMenuInputChanged(PaperPunchable input)
-    {
-        currentInput = input;
+        var data = menu.getInputAsPunchable();
+        var stack = data.stack();
+        var punchable = data.punchable();
         currentPage = 0;
-        if (input != null)
+        if (punchable != null)
         {
-            if (input.showAsCards())
+            if (punchable.showAsCards())
             {
                 configureForCard();
             }
@@ -222,15 +269,31 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
                 configureForTape();
             }
             matchToggleStatesToData();
+            if(stack.has(DataComponents.CUSTOM_NAME))
+            {
+                nameInput.setValue(stack.get(DataComponents.CUSTOM_NAME).getString());
+            }
+            else
+            {
+                nameInput.setValue(stack.getHoverName().getString());
+            }
+            nameInput.setEditable(true);
         }
-        setToggleGridVisible(input != null);
-        refreshConfirmButtonState();
+        else
+        {
+            nameInput.setValue("");
+            nameInput.setEditable(false);
+        }
+        setToggleGridVisible(punchable != null);
+        updatePageButtonVisibility();
+        nameInput.setFocused(false);
+        setFocused(null);
     }
 
-    private void refreshConfirmButtonState()
+    private void updatePageButtonVisibility()
     {
-        confirmButton.active = menu.canTriggerConfirm();
-        if(currentInput == null || currentInput.showAsCards())
+        var punchable = menu.getInputAsPunchable().punchable();
+        if(punchable == null || punchable.showAsCards())
         {
             prevPageButton.visible = false;
             nextPageButton.visible = false;
@@ -238,14 +301,17 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         else
         {
             prevPageButton.visible = currentPage > 0;
-            nextPageButton.visible = currentPage < currentInput.pageCount()-1;
+            nextPageButton.visible = currentPage < punchable.pageCount()-1;
         }
     }
 
     private void changePage(int delta)
     {
-        currentPage = Math.clamp(currentPage + delta, 0, currentInput.pageCount()-1);
-        refreshConfirmButtonState();
+        var punchable = menu.getInputAsPunchable().punchable();
+        if(punchable == null || punchable.showAsCards())
+            return;
+        currentPage = Math.clamp(currentPage + delta, 0, punchable.pageCount()-1);
+        updatePageButtonVisibility();
         matchToggleStatesToData();
     }
 
@@ -255,25 +321,35 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         BG_TEXTURE.blit(guiGraphics, leftPos, topPos);
         INV_TEXTURE.blit(guiGraphics, leftPos + 56, topPos + 124);
 
-        if (currentInput == null)
+        var punchable = menu.getInputAsPunchable().punchable();
+        if (punchable == null)
         {
             return;
         }
-        if (currentInput.showAsCards())
+        if (punchable.showAsCards())
         {
             CARD_TEXTURE.blit(guiGraphics, leftPos + 24, topPos + 4);
         }
         else
         {
-            TAPE_TEXTURE.blit(guiGraphics, leftPos + 24, topPos + 15);
+            TAPE_TEXTURE.blit(guiGraphics, leftPos + 24, topPos + 9);
         }
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
+    {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
     {
-        graphics.drawString(font, playerInventoryTitle, 64, imageHeight - 102, 0x404040, false);
-        if (currentInput != null && !currentInput.showAsCards())
+        super.renderLabels(graphics, mouseX, mouseY);
+
+        var punchable = menu.getInputAsPunchable().punchable();
+        if (punchable != null && !punchable.showAsCards())
         {
             Utils.drawCenteredLabel(
                     graphics,
@@ -281,10 +357,10 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
                     PaperPunchCards.getTranslationFormatted(
                             "menu.tape_page",
                             currentPage + 1,
-                            currentInput.pageCount()
+                            punchable.pageCount()
                     ),
                     halfWidth(),
-                    20,
+                    76,
                     0x746558,
                     false
             );

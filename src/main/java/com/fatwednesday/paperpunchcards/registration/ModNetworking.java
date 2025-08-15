@@ -1,7 +1,7 @@
 package com.fatwednesday.paperpunchcards.registration;
 
-import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuCreatePayload;
-import com.fatwednesday.paperpunchcards.payloads.ItemStackSyncPayload;
+import com.fatwednesday.fatlib.payloads.FatLibMenuRenamePayload;
+import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuDataPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class ModNetworking
@@ -11,15 +11,15 @@ public class ModNetworking
         final var registrar = event.registrar("1");
 
         registrar.playToServer(
-                ItemStackSyncPayload.TYPE,
-                ItemStackSyncPayload.STREAM_CODEC,
-                ItemStackSyncPayload::handleServerDataOnMain
+                FatLibMenuRenamePayload.TYPE,
+                FatLibMenuRenamePayload.STREAM_CODEC,
+                FatLibMenuRenamePayload::handleServerDataOnMain
         );
 
         registrar.playToServer(
-                CardPunchMenuCreatePayload.TYPE,
-                CardPunchMenuCreatePayload.STREAM_CODEC,
-                CardPunchMenuCreatePayload::handleServerDataOnMain
+                CardPunchMenuDataPayload.TYPE,
+                CardPunchMenuDataPayload.STREAM_CODEC,
+                CardPunchMenuDataPayload::handleServerDataOnMain
         );
     }
 }
