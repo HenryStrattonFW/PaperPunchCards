@@ -3,10 +3,9 @@ package com.fatwednesday.paperpunchcards.gui;
 import com.fatwednesday.fatlib.gui.components.GuiTexture;
 import com.fatwednesday.fatlib.gui.components.SpriteButton;
 import com.fatwednesday.fatlib.gui.components.SpriteToggle;
-import com.fatwednesday.fatlib.gui.utils.Utils;
+import com.fatwednesday.fatlib.gui.utils.GuiUtils;
 import com.fatwednesday.fatlib.payloads.FatLibMenuRenamePayload;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
-import com.fatwednesday.paperpunchcards.items.PaperPunchable;
 import com.fatwednesday.paperpunchcards.payloads.CardPunchMenuDataPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +14,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -351,7 +349,7 @@ public class CardPuncherScreen extends AbstractContainerScreen<CardPuncherMenu>
         var punchable = menu.getInputAsPunchable().punchable();
         if (punchable != null && !punchable.showAsCards())
         {
-            Utils.drawCenteredLabel(
+            GuiUtils.drawCenteredLabel(
                     graphics,
                     font,
                     PaperPunchCards.getTranslationFormatted(

@@ -20,6 +20,8 @@
   "paperpunchcards.message.player_mode_play_once": "Play Once",
   "paperpunchcards.message.player_mode_step": "Step",
 
+  "paperpunchcards.menu.guillotine_title": "Guillotine",
+
   "paperpunchcards.configuration.title": "Paper Punch Cards Configs",
   "paperpunchcards.configuration.PaperTapePageCount": "Paper Tape Size",
   "paperpunchcards.configuration.PaperTapePageCount.tooltip" : "Number of signal pages in a Paper Tape",

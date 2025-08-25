@@ -173,10 +173,13 @@ public class CardPuncherMenu
 
         if(inputSlot.hasItem())
         {
-            inputSlot.getItem().shrink(1);
+            inputSlot.getItem().shrink(stack.getCount());
             if(changeListener != null)
                 changeListener.inputChanged();
         }
+
+        stack.onCraftedBy(player.level(), player, stack.getCount());
+
         // May be able to repopulate right away.
         updateOutputItem();
     }
