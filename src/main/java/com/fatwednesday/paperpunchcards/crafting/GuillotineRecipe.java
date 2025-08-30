@@ -1,5 +1,6 @@
 package com.fatwednesday.paperpunchcards.crafting;
 
+import com.fatwednesday.fatlib.utils.RecipeUtils;
 import com.fatwednesday.paperpunchcards.registration.ModRecipes;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -13,12 +14,12 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 
-public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredients) implements Recipe<GuillotineRecipeInput>
+public record GuillotineRecipe(ItemStack result, NonNullList<ItemStack> ingredients) implements Recipe<GuillotineRecipeInput>
 {
     @Override
     public boolean matches(GuillotineRecipeInput guillotineRecipeInput, Level level)
     {
-        return false;
+        return RecipeUtils.matchByCounts(guillotineRecipeInput, ingredients);
     }
 
     @Override
@@ -42,7 +43,7 @@ public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredi
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModRecipes.GUILLOLINE_RECIPE_SERIALIZER.get();
+        return ModRecipes.GUILLOTINE_RECIPE_SERIALIZER.get();
     }
 
     @Override
@@ -56,9 +57,9 @@ public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredi
         private static final MapCodec<GuillotineRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) ->
                 builder.group(
                         ItemStack.STRICT_CODEC.fieldOf("result").forGetter(GuillotineRecipe::result),
-                        Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((data) ->
+                        ItemStack.STRICT_CODEC.listOf().fieldOf("ingredients").flatXmap((data) ->
                         {
-                            var ingredientsAsArray = data.toArray(Ingredient[]::new);
+                            var ingredientsAsArray = data.toArray(ItemStack[]::new);
                             if (ingredientsAsArray.length == 0)
                             {
                                 return DataResult.error(() -> "No ingredients for guillotine recipe");
@@ -67,7 +68,7 @@ public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredi
                             {
                                 return DataResult.error(() -> "Too many ingredients for guillotine recipe. The maximum is: 3");
                             }
-                            return DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredientsAsArray));
+                            return DataResult.success(NonNullList.of(ItemStack.EMPTY, ingredientsAsArray));
                         },
                         DataResult::success).forGetter(GuillotineRecipe::ingredients)
                 ).apply(builder, GuillotineRecipe::new)
@@ -96,8 +97,8 @@ public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredi
         private static GuillotineRecipe fromNetwork(RegistryFriendlyByteBuf buffer)
         {
             int size = buffer.readVarInt();
-            var ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
-            ingredients.replaceAll((x) -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            var ingredients = NonNullList.withSize(size, ItemStack.EMPTY);
+            ingredients.replaceAll((x) -> ItemStack.STREAM_CODEC.decode(buffer));
             var result = ItemStack.STREAM_CODEC.decode(buffer);
             return new GuillotineRecipe(result, ingredients);
         }
@@ -105,9 +106,9 @@ public record GuillotineRecipe(ItemStack result, NonNullList<Ingredient> ingredi
         private static void toNetwork(RegistryFriendlyByteBuf buffer, GuillotineRecipe recipe)
         {
             buffer.writeVarInt(recipe.ingredients.size());
-            for (Ingredient ingredient : recipe.ingredients)
+            for (var ingredient : recipe.ingredients)
             {
-                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
+                ItemStack.STREAM_CODEC.encode(buffer, ingredient);
             }
             ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
         }

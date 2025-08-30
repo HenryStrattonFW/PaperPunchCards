@@ -2,7 +2,7 @@
   "type": "paperpunchcards:guillotine_recipe",
   "ingredients": [
     {
-      "item": "minecraft:paper",
+      "id": "minecraft:paper",
       "count": 2
     }
   ],

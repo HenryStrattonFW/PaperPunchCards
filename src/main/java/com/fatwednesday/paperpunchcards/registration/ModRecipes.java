@@ -30,7 +30,7 @@ public class ModRecipes
                     }
             );
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GuillotineRecipe>> GUILLOLINE_RECIPE_SERIALIZER =
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GuillotineRecipe>> GUILLOTINE_RECIPE_SERIALIZER =
             SERIALIZERS.register(
                     "guillotine_recipe",
                     GuillotineRecipe.Serializer::new

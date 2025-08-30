@@ -3,8 +3,9 @@ package com.fatwednesday.paperpunchcards.gui;
 import com.fatwednesday.fatlib.gui.components.ObservableSlot;
 import com.fatwednesday.fatlib.gui.components.OutputSlot;
 import com.fatwednesday.fatlib.gui.menus.MenuWithInventory;
-import com.fatwednesday.paperpunchcards.PaperPunchCards;
+import com.fatwednesday.fatlib.utils.RecipeUtils;
 import com.fatwednesday.paperpunchcards.crafting.GuillotineRecipe;
+import com.fatwednesday.paperpunchcards.crafting.GuillotineRecipeInput;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.registration.ModRecipes;
 import net.minecraft.network.chat.Component;
@@ -13,11 +14,16 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
+/*
+ * Based largely on the StoneCutter menu + screen, so a lot of code copied
+ * from that and reformatted for my own readability / convenience.
+ */
 public class GuillotineMenu extends MenuWithInventory
 {
     private static final int ContainerSlots = 4;
@@ -33,6 +39,10 @@ public class GuillotineMenu extends MenuWithInventory
     private Player player;
     private ObservableSlot[] inputSlots;
     private OutputSlot outputSlot;
+    private DataSlot selectedRecipeIndex;
+
+    private List<RecipeHolder<GuillotineRecipe>> allRecipes;
+    private List<RecipeHolder<GuillotineRecipe>> craftableRecipes;
 
     public GuillotineMenu(int id, Inventory inventory)
     {
@@ -44,8 +54,9 @@ public class GuillotineMenu extends MenuWithInventory
     {
         container = new SimpleContainer(ContainerSlots);
         player = playerInventory.player;
+        allRecipes = getAllRecipes();
 
-        inputSlots = new ObservableSlot[INPUT_INDEX_C+1];
+        inputSlots = new ObservableSlot[INPUT_INDEX_C + 1];
         for(var i=0;i<=INPUT_INDEX_C;i++)
         {
             inputSlots[i] = new ObservableSlot(container, i,20,15 + (i * 19));
@@ -56,28 +67,30 @@ public class GuillotineMenu extends MenuWithInventory
         outputSlot = new OutputSlot(container, OUTPUT_INDEX, 143, 33, this::onOutputTake);
         addSlot(outputSlot);
 
+        selectedRecipeIndex = DataSlot.standalone();
+        addDataSlot(selectedRecipeIndex);
+        selectedRecipeIndex.set(-1);
+
         CreateInventorySlots(playerInventory, 8, 84);
     }
 
 
     private void onOutputTake(Player player, ItemStack stack)
     {
-        //stack.onCraftedBy(player.level(), player, stack.getCount());
-        // Remove inputs relevant to the cost of the crafted item.
+        stack.onCraftedBy(player.level(), player, stack.getCount());
+        var recipe = allRecipes.get(selectedRecipeIndex.get()).value();
+        RecipeUtils.consumeIngredients(recipe.ingredients(), inputSlots);
+        setupResultSlot();
+        broadcastChanges();
     }
 
     private void onInputSlotChanged(ObservableSlot slot)
     {
-        // Update available recipes.
-        var recipes = getAllRecipes();
-        PaperPunchCards.log("Discovered " + recipes.size() + " guillotine recipes");
-        for(var r : recipes)
-        {
-            PaperPunchCards.log(r.id().getPath());
-        }
-        // for each recipe, add a visible button, and enable based on
-        // validity against current input slot contents.
-        // See StoneCutter for example.
+        // Update craftable recipe list.
+        craftableRecipes = getAllCraftableRecipes();
+
+        // May result in needing to update output.
+        setupResultSlot();
     }
 
 
@@ -97,11 +110,12 @@ public class GuillotineMenu extends MenuWithInventory
         if(i == OUTPUT_INDEX)
         {
             // take result.
+            onOutputTake(player, currentStack);
         }
         else if(i > OUTPUT_INDEX)
         {
             // player > container.
-            if(!this.moveItemStackTo(currentStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
+            if(!moveItemStackTo(currentStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
             {
                 return ItemStack.EMPTY;
             }
@@ -109,7 +123,7 @@ public class GuillotineMenu extends MenuWithInventory
         else
         {
             // container > player
-            if (!this.moveItemStackTo(currentStack, INV_INDEX_START, HOTBAR_INDEX_END, false))
+            if (!moveItemStackTo(currentStack, INV_INDEX_START, HOTBAR_INDEX_END, false))
             {
                 return ItemStack.EMPTY;
             }
@@ -133,14 +147,96 @@ public class GuillotineMenu extends MenuWithInventory
         return true;
     }
 
+    @Override
+    public void removed(Player player)
+    {
+        super.removed(player);
+
+        if (player.level().isClientSide())
+            return;
+
+        for (var i = 0; i <= INPUT_INDEX_C; ++i)
+        {
+            var stack = container.removeItemNoUpdate(i);
+            if (stack.isEmpty())
+                continue;
+
+            player.getInventory().placeItemBackInInventory(stack);
+        }
+    }
+
+    public boolean clickMenuButton(Player player, int index)
+    {
+        if (isCraftable(index))
+        {
+            selectedRecipeIndex.set(index);
+            setupResultSlot();
+        }
+        return true;
+    }
 
     private void setupResultSlot()
     {
+        if(!isCraftable(selectedRecipeIndex.get()))
+        {
+            outputSlot.set(ItemStack.EMPTY);
+            outputSlot.setChanged();
+            broadcastChanges();
+        }
+        else
+        {
+            var recipe = allRecipes.get(selectedRecipeIndex.get()).value();
+            outputSlot.set(recipe.result().copy());
+            outputSlot.setChanged();
+            broadcastChanges();
+        }
+    }
+
+    public int getRecipeCount()
+    {
+        return allRecipes != null
+                ? allRecipes.size()
+                : 0;
+    }
+
+    public List<RecipeHolder<GuillotineRecipe>> getRecipes()
+    {
+        return allRecipes;
+    }
+
+    public int getSelectedRecipeIndex()
+    {
+        return selectedRecipeIndex.get();
     }
 
     private List<RecipeHolder<GuillotineRecipe>> getAllRecipes()
     {
         return player.level().getRecipeManager().getAllRecipesFor(ModRecipes.GUILLOTINE_RECIPE.get());
+    }
+
+    public boolean isCraftable(int recipeIndex)
+    {
+        if(recipeIndex < 0 ||
+            recipeIndex >= getRecipeCount() ||
+            craftableRecipes == null ||
+            craftableRecipes.isEmpty())
+        {
+            return false;
+        }
+        var recipe = allRecipes.get(recipeIndex).value();
+        for(var craftable:craftableRecipes)
+        {
+            if(craftable.value() == recipe)
+                return true;
+        }
+        return false;
+    }
+
+    private List<RecipeHolder<GuillotineRecipe>> getAllCraftableRecipes()
+    {
+        var input = new GuillotineRecipeInput(inputSlots);
+
+        return player.level().getRecipeManager().getRecipesFor(ModRecipes.GUILLOTINE_RECIPE.get(), input, player.level());
     }
 
     public static void openMenuForPlayer( Player player)

@@ -211,11 +211,9 @@ public class CardPuncherMenu
         if (player.level().isClientSide())
             return;
 
-        for (var i = 0; i < container.getContainerSize(); ++i)
+        var stack = container.removeItemNoUpdate(INPUT_INDEX);
+        if (!stack.isEmpty())
         {
-            var stack = container.removeItemNoUpdate(i);
-            if (stack.isEmpty())
-                continue;
             player.getInventory().placeItemBackInInventory(stack);
         }
     }

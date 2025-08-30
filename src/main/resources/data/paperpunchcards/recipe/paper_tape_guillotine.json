@@ -1,0 +1,17 @@
+{
+  "type": "paperpunchcards:guillotine_recipe",
+  "ingredients": [
+    {
+      "id": "minecraft:paper",
+      "count": 4
+    },
+    {
+      "id": "minecraft:slime_ball",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "paperpunchcards:paper_tape_item",
+    "count": 1
+  }
+}
