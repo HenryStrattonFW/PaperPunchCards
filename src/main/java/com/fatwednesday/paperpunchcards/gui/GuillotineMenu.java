@@ -59,7 +59,7 @@ public class GuillotineMenu extends MenuWithInventory
         inputSlots = new ObservableSlot[INPUT_INDEX_C + 1];
         for(var i=0;i<=INPUT_INDEX_C;i++)
         {
-            inputSlots[i] = new ObservableSlot(container, i,20,15 + (i * 19));
+            inputSlots[i] = new ObservableSlot(container, i,15,15 + (i * 19));
             inputSlots[i].setChangeListener(this::onInputSlotChanged);
             addSlot(inputSlots[i]);
         }
@@ -71,65 +71,65 @@ public class GuillotineMenu extends MenuWithInventory
         addDataSlot(selectedRecipeIndex);
         selectedRecipeIndex.set(-1);
 
-        CreateInventorySlots(playerInventory, 8, 84);
+        CreateInventorySlots(playerInventory, 8, 95);
     }
-
 
     private void onOutputTake(Player player, ItemStack stack)
     {
         stack.onCraftedBy(player.level(), player, stack.getCount());
         var recipe = allRecipes.get(selectedRecipeIndex.get()).value();
         RecipeUtils.consumeIngredients(recipe.ingredients(), inputSlots);
-        setupResultSlot();
-        broadcastChanges();
+        updateOutputSlotContents();
     }
 
     private void onInputSlotChanged(ObservableSlot slot)
     {
         // Update craftable recipe list.
         craftableRecipes = getAllCraftableRecipes();
+        if(craftableRecipes.isEmpty())
+            selectedRecipeIndex.set(-1);
 
         // May result in needing to update output.
-        setupResultSlot();
+        updateOutputSlotContents();
     }
 
 
     @Override
-    public ItemStack quickMoveStack(Player player, int i)
+    public ItemStack quickMoveStack(Player player, int index)
     {
-        var originalStack = ItemStack.EMPTY;
-        var slot = getSlot(i);
-        if(!slot.hasItem())
-        {
-            return originalStack;
-        }
+        var slot = slots.get(index);
+        if (!slot.hasItem())
+            return ItemStack.EMPTY;
 
-        var currentStack = slot.getItem();
-        originalStack = currentStack.copy();
+        var rawStack = slot.getItem();
+        var quickMoveStack = rawStack.copy();
 
-        if(i == OUTPUT_INDEX)
+        if(index == OUTPUT_INDEX)
         {
-            // take result.
-            onOutputTake(player, currentStack);
+            // Output slot > player
+            if(!this.moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
+            {
+                return ItemStack.EMPTY;
+            }
+            slot.onQuickCraft(rawStack, quickMoveStack);
         }
-        else if(i > OUTPUT_INDEX)
+        else if(index <= INPUT_INDEX_C)
         {
-            // player > container.
-            if(!moveItemStackTo(currentStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
+            if (!moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
             {
                 return ItemStack.EMPTY;
             }
         }
         else
         {
-            // container > player
-            if (!moveItemStackTo(currentStack, INV_INDEX_START, HOTBAR_INDEX_END, false))
+            // player > container.
+            if(!moveItemStackTo(rawStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
             {
                 return ItemStack.EMPTY;
             }
         }
 
-        if (currentStack.isEmpty())
+        if (rawStack.isEmpty())
         {
             slot.set(ItemStack.EMPTY);
         }
@@ -138,7 +138,14 @@ public class GuillotineMenu extends MenuWithInventory
             slot.setChanged();
         }
 
-        return originalStack;
+        if (rawStack.getCount() == quickMoveStack.getCount())
+        {
+            return ItemStack.EMPTY;
+        }
+        slot.onTake(player, rawStack);
+
+        broadcastChanges();
+        return quickMoveStack;
     }
 
     @Override
@@ -170,12 +177,12 @@ public class GuillotineMenu extends MenuWithInventory
         if (isCraftable(index))
         {
             selectedRecipeIndex.set(index);
-            setupResultSlot();
+            updateOutputSlotContents();
         }
         return true;
     }
 
-    private void setupResultSlot()
+    private void updateOutputSlotContents()
     {
         if(!isCraftable(selectedRecipeIndex.get()))
         {

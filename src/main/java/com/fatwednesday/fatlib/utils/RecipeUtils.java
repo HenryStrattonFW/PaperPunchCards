@@ -1,5 +1,6 @@
 package com.fatwednesday.fatlib.utils;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -83,23 +84,24 @@ public class RecipeUtils
         return counts;
     }
 
-    public static void consumeIngredients(List<ItemStack> ingredients, Slot...inputSlots)
+    public static void consumeIngredients(List<ItemStack> ingredients,  Slot...inputSlots)
     {
         for(var ingredient : ingredients)
         {
             var needed = ingredient.getCount();
             for(var slot : inputSlots)
             {
-                var item = slot.getItem();
-                if (!ItemStack.isSameItemSameComponents(ingredient, item))
+                var stack = slot.getItem();
+                if (!ItemStack.isSameItemSameComponents(ingredient, stack))
                     continue;
 
-                var canTake = Math.min(needed, item.getCount());
+                var canTake = Math.min(needed, stack.getCount());
                 if(canTake == 0)
                     continue;
 
                 needed -= canTake;
-                item.shrink(canTake);
+                slot.remove(canTake);
+                slot.setChanged();
 
                 if(needed == 0)
                     break;
