@@ -26,11 +26,13 @@ public class CardPuncherMenu
         extends MenuWithInventory
         implements FatLibMenuRenamePayload.Handler
 {
-    private static final int ContainerSlots = 2;
     public static final int MAX_NAME_LENGTH = 16;
 
     private static final int INPUT_INDEX = 0;
     private static final int OUTPUT_INDEX = 1;
+    private static final int INV_INDEX_START = 2;
+    private static final int HOTBAR_INDEX_START = INV_INDEX_START + 27;
+    private static final int HOTBAR_INDEX_END = HOTBAR_INDEX_START + 9;
 
     private Container container;
     private Player player;
@@ -50,7 +52,7 @@ public class CardPuncherMenu
 
     public void initMenu(Inventory playerInventory)
     {
-        container = new SimpleContainer(ContainerSlots);
+        container = new SimpleContainer(2);
         player = playerInventory.player;
 
         inputSlot = new FilterableSlot(container, 0, 64,  96);
@@ -58,13 +60,7 @@ public class CardPuncherMenu
         inputSlot.setChangeListener(this::inputSlotChanged);
         addSlot(inputSlot);
 
-        outputSlot = new OutputSlot(container, 1, 208, 96)
-        {
-            public void onTake(Player player, ItemStack stack)
-            {
-                CardPuncherMenu.this.onOutputTaken(player, stack);
-            }
-        };
+        outputSlot = new OutputSlot(container, 1, 208, 96, this::onOutputTaken);
         addSlot(outputSlot);
 
         CreateInventorySlots(playerInventory, 64, 142);
@@ -73,48 +69,54 @@ public class CardPuncherMenu
     @Override
     public ItemStack quickMoveStack(Player player, int index)
     {
-        var originalStack = ItemStack.EMPTY;
         var slot = slots.get(index);
+        if (!slot.hasItem())
+            return ItemStack.EMPTY;
 
-        if (slot.hasItem())
+        var rawStack = slot.getItem();
+        var quickMoveStack = rawStack.copy();
+
+        if(index == OUTPUT_INDEX)
         {
-            var currentStack = slot.getItem();
-            originalStack = currentStack.copy();
-
-            if (index < 2)
+            if(!this.moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
             {
-                // Container > Player
-                if (!moveItemStackTo(currentStack, ContainerSlots, slots.size(), true))
-                {
-                    return ItemStack.EMPTY;
-                }
+                return ItemStack.EMPTY;
             }
-            else
+            slot.onQuickCraft(rawStack, quickMoveStack);
+        }
+        else if (index == INPUT_INDEX)
+        {
+            if (!moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
             {
-                // Player > Container
-                if (!moveItemStackTo(currentStack, 0, ContainerSlots, false))
-                {
-                    return ItemStack.EMPTY;
-                }
+                return ItemStack.EMPTY;
             }
-
-            if (currentStack.isEmpty())
+        }
+        else
+        {
+            // Player > Container
+            if (!moveItemStackTo(rawStack, 0, 1, false))
             {
-                slot.set(ItemStack.EMPTY);
-            }
-            else
-            {
-                slot.setChanged();
-            }
-            if(index == OUTPUT_INDEX)
-            {
-                // fake the pull from the output slot onTake callback
-                // so that we still trigger updates to input, screen, etc.
-                onOutputTaken(player, currentStack);
+                return ItemStack.EMPTY;
             }
         }
 
-        return originalStack;
+        if (rawStack.isEmpty())
+        {
+            slot.set(ItemStack.EMPTY);
+        }
+        else
+        {
+            slot.setChanged();
+        }
+
+        if (rawStack.getCount() == quickMoveStack.getCount())
+        {
+            return ItemStack.EMPTY;
+        }
+        slot.onTake(player, rawStack);
+
+        broadcastChanges();
+        return quickMoveStack;
     }
 
     @Override
@@ -158,7 +160,7 @@ public class CardPuncherMenu
             sequenceData.clear();
         }
 
-        updateOutputItem();
+        updateOutputSlotContents();
 
         if(changeListener != null)
         {
@@ -168,23 +170,14 @@ public class CardPuncherMenu
 
     private void onOutputTaken(Player player, ItemStack stack)
     {
-        if(stack.has(DataComponents.CUSTOM_NAME))
-        {
-            PaperPunchCards.log("NAME ON OUTPUT: "+stack.get(DataComponents.CUSTOM_NAME).toString());
-        }
-        else
-        {
-            PaperPunchCards.log("NO CUSTOM NAME!");
-        }
+        stack.onCraftedBy(player.level(), player, stack.getCount());
 
-        if(inputSlot.hasItem())
-        {
-            inputSlot.getItem().shrink(1);
-            if(changeListener != null)
-                changeListener.inputChanged();
-        }
+        inputSlot.remove(1);
+        if(changeListener != null)
+            changeListener.inputChanged();
+
         // May be able to repopulate right away.
-        updateOutputItem();
+        updateOutputSlotContents();
     }
 
     public PaperPunchableStack getInputAsPunchable()
@@ -214,11 +207,9 @@ public class CardPuncherMenu
         if (player.level().isClientSide())
             return;
 
-        for (var i = 0; i < container.getContainerSize(); ++i)
+        var stack = container.removeItemNoUpdate(INPUT_INDEX);
+        if (!stack.isEmpty())
         {
-            var stack = container.removeItemNoUpdate(i);
-            if (stack.isEmpty())
-                continue;
             player.getInventory().placeItemBackInInventory(stack);
         }
     }
@@ -233,7 +224,7 @@ public class CardPuncherMenu
         {
             sequenceData.copyFrom(bytes);
         }
-        updateOutputItem();
+        updateOutputSlotContents();
         return true;
     }
 
@@ -263,7 +254,7 @@ public class CardPuncherMenu
             this.itemName = "";
             return false;
         }
-        updateOutputItem();
+        updateOutputSlotContents();
         return true;
     }
 
@@ -272,7 +263,7 @@ public class CardPuncherMenu
     {
         PaperPunchCards.log("Applying name in handleRenameData: " + name);
         itemName = name;
-        updateOutputItem();
+        updateOutputSlotContents();
     }
 
     public static void openMenuForPlayer( Player player)
@@ -285,7 +276,7 @@ public class CardPuncherMenu
         );
     }
 
-    private void updateOutputItem()
+    private void updateOutputSlotContents()
     {
         var inputStack = container.getItem(inputSlot.index);
         if (inputStack.isEmpty())

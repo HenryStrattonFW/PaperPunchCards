@@ -3,6 +3,8 @@ package com.fatwednesday.paperpunchcards.registration;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.gui.CardPuncherMenu;
 import com.fatwednesday.paperpunchcards.gui.CardPuncherScreen;
+import com.fatwednesday.paperpunchcards.gui.GuillotineMenu;
+import com.fatwednesday.paperpunchcards.gui.GuillotineScreen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -27,6 +29,14 @@ public class ModMenus
             )
     );
 
+    public static final Supplier<MenuType<GuillotineMenu>> GUILLOTINE_MENU = MENU_TYPES.register(
+            "guillotine_menu",
+            () -> new MenuType<>(
+                    GuillotineMenu::new,
+                    FeatureFlags.DEFAULT_FLAGS
+            )
+    );
+
     public static void register(IEventBus modEventBus)
     {
         MENU_TYPES.register(modEventBus);
@@ -35,5 +45,6 @@ public class ModMenus
     public static void onRegisterScreens(RegisterMenuScreensEvent event)
     {
         event.register(ModMenus.CARD_PUNCHER_MENU.get(), CardPuncherScreen::new);
+        event.register(ModMenus.GUILLOTINE_MENU.get(), GuillotineScreen::new);
     }
 }
