@@ -13,6 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public record GuillotineRecipe(ItemStack result, NonNullList<ItemStack> ingredients) implements Recipe<GuillotineRecipeInput>
 {
@@ -50,6 +53,17 @@ public record GuillotineRecipe(ItemStack result, NonNullList<ItemStack> ingredie
     public RecipeType<?> getType()
     {
         return ModRecipes.GUILLOTINE_RECIPE.get();
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients()
+    {
+        NonNullList<Ingredient> list = NonNullList.create();
+        for (ItemStack stack : ingredients)
+        {
+            list.add(Ingredient.of(stack.copy()));
+        }
+        return list;
     }
 
     public static class Serializer implements RecipeSerializer<GuillotineRecipe>

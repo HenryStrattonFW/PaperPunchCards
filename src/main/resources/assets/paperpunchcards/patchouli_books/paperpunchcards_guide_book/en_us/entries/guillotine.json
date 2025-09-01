@@ -1,0 +1,15 @@
+{
+  "name": "Guillotine",
+  "icon": "paperpunchcards:guillotine_block",
+  "category": "paperpunchcards:pamphlet_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Guillotine$() is a primary crafting tool of this mod. It is where you convert raw materials, into punch cards and paper tapes for use with readers and players.$(br)This is very similar to a stone cutter, but with 3 input slots. When enough of the right ingredients are present, the recipe selection will become active, and output can then be taken from the output slot."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "paperpunchcards:guillotine_block"
+    }
+  ]
+}

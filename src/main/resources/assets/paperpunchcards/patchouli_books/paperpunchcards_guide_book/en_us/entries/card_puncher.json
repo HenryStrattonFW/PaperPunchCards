@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The $(item)Card Puncher$() is the primary crafting tool of this mod. It can be used to punch sequences into both $(l:punch_card)Punch Card$() and $(l:paper_tape)Paper Tape$() items.$(br)In this version of the mod, you can fill holes by clicking them again for free, but this may not always be the case."
+      "text": "The $(item)Card Puncher$() is a primary crafting tool of this mod. It can be used to punch sequences into both $(l:punch_card)Punch Card$() and $(l:paper_tape)Paper Tape$() items.$(br)In this version of the mod, you can fill holes by clicking them again for free, but this may not always be the case."
     },
     {
       "type": "patchouli:crafting",
