@@ -50,8 +50,8 @@
         {
             "type": "patchouli:item",
             "item": "#guillotine",
-            "x": 50,
-            "y": 52,
+            "x": 82,
+            "y": 60,
             "framed": false
         }
     ]
