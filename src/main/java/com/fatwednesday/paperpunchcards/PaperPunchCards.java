@@ -4,6 +4,7 @@ import com.fatwednesday.paperpunchcards.registration.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -32,7 +33,6 @@ public class PaperPunchCards
     public PaperPunchCards(IEventBus modEventBus, ModContainer modContainer)
     {
         modEventBus.addListener(this::commonSetup);
-
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModCreativeTab.register(modEventBus);
@@ -42,8 +42,7 @@ public class PaperPunchCards
 
         NeoForge.EVENT_BUS.register(this);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        modContainer.registerConfig(ModConfig.Type.SERVER, Config.SPEC);
     }
 
     public static ResourceLocation getResource(String path)

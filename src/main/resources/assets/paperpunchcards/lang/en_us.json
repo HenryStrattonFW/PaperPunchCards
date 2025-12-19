@@ -29,5 +29,8 @@
   "paperpunchcards.configuration.CardReaderDelayTicks.tooltip" : "Number of ticks that the reader will emit a signal for after a valid card is removed",
 
   "paperpunchcards.patchouli.title": "Punch It!",
-  "paperpunchcards.patchouli.landing": "Short guide to get you started when dipping your toes into the Paper Punch Cards mod."
+  "paperpunchcards.patchouli.landing": "Short guide to get you started when dipping your toes into the Paper Punch Cards mod.",
+
+  "paperpunchcards.configuration.section.paperpunchcards.server.toml":"Server Config" ,
+  "paperpunchcards.configuration.section.paperpunchcards.server.toml.title": "Paper Punch Cards"
 }
