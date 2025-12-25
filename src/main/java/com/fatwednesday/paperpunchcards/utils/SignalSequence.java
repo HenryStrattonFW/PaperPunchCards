@@ -10,6 +10,7 @@ import java.util.Base64;
 
 public record SignalSequence(byte[] bytes)
 {
+    private static final byte fullByte = (byte)0xFF;
     public static final Codec<SignalSequence> BASIC_CODEC =
             Codec.STRING.xmap(
                     SignalSequence::fromBase64,
@@ -41,6 +42,15 @@ public record SignalSequence(byte[] bytes)
         for (byte b : bytes)
         {
             if (b != 0) return false;
+        }
+        return true;
+    }
+
+    public boolean isLaceSequence()
+    {
+        for (byte b : bytes)
+        {
+            if (b != fullByte) return false;
         }
         return true;
     }

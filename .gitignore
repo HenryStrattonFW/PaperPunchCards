@@ -25,3 +25,13 @@ run-data
 
 repo
 /aseprite/
+
+src/.DS_Store
+
+src/main/.DS_Store
+
+src/main/resources/.DS_Store
+
+src/main/resources/data/paperpunchcards/.DS_Store
+
+src/main/resources/data/paperpunchcards/recipe/.DS_Store

@@ -7,6 +7,8 @@
   "item.paperpunchcards.punch_card_item": "Punch Card",
   "item.paperpunchcards.paper_tape_item": "Paper Tape",
 
+  "paperpunchcards.lace_card_warning": "Definitely don't' use",
+
   "paperpunchcards.creative_tab": "Paper Punch Cards",
   "paperpunchcards.menu.button.confirm": "Confirm",
   "paperpunchcards.menu.tape_page": "Page %1$s of %2$s",
@@ -19,6 +21,8 @@
   "paperpunchcards.message.player_mode_loop": "Loop",
   "paperpunchcards.message.player_mode_play_once": "Play Once",
   "paperpunchcards.message.player_mode_step": "Step",
+  "paperpunchcards.message.reader_player_jammed": "Mechanism is jammed!",
+
 
   "paperpunchcards.menu.guillotine_title": "Guillotine",
 

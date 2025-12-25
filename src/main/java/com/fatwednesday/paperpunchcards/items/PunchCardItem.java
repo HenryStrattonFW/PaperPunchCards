@@ -13,9 +13,12 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class PunchCardItem extends Item implements PaperPunchable
 {
@@ -82,5 +85,18 @@ public class PunchCardItem extends Item implements PaperPunchable
             );
         }
         return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        var seq = stack.get(ModDataComponents.SIGNAL_SEQUENCE);
+        if(seq!= null && seq.isLaceSequence())
+        {
+            var label = PaperPunchCards.getTranslation("lace_card_warning");
+            tooltipComponents.add(label);
+        }
     }
 }

@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,6 +102,15 @@ public class TapePlayerBlock extends BaseEntityBlock
         }
         if (blockEntity instanceof TapePlayerBlockEntity tapePlayer)
         {
+            if(tapePlayer.isJammed())
+            {
+                // trigger jammed warning.
+                player.displayClientMessage(
+                        PaperPunchCards.getTranslation("message.reader_player_jammed"),
+                        true
+                );
+                return ItemInteractionResult.SUCCESS;
+            }
             if(stack.isEmpty() && player.isCrouching())
             {
                 cycleMode(player, level, state, pos);

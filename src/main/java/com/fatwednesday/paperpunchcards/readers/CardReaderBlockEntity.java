@@ -11,14 +11,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -31,12 +30,18 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
     private ItemStack currentItem = ItemStack.EMPTY;
     private CardReaderState cachedState;
     private SignalSequence bakedSequence;
+    private boolean jammed = false;
     private int residualSignalTicks;
 
     public CardReaderBlockEntity(BlockPos pos, BlockState blockState)
     {
         super(ModBlocks.CARD_READER_BLOCK_ENTITY.get(), pos, blockState);
         cachedState = CardReaderState.UNSET;
+    }
+
+    public boolean isJammed()
+    {
+        return jammed;
     }
 
     @Override
@@ -85,6 +90,11 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             var seq = currentItem.get(ModDataComponents.SIGNAL_SEQUENCE);
             if(seq == null)
             {
+                cachedState = CardReaderState.BAD;
+            }
+            else if(seq.isLaceSequence())
+            {
+                jammed = true;
                 cachedState = CardReaderState.BAD;
             }
             else
@@ -138,7 +148,11 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
 
     public boolean shouldOutputSignal()
     {
-        return cachedState ==  CardReaderState.GOOD || residualSignalTicks > 0;
+        if(jammed)
+        {
+            return false;
+        }
+        return cachedState == CardReaderState.GOOD || residualSignalTicks > 0;
     }
 
 

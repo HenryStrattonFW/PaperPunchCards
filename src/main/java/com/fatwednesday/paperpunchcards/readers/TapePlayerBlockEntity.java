@@ -30,6 +30,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
     private NibbleStore sequence;
     private int tickCounter = -1;
     private boolean hasPower = false;
+    private boolean jammed = false;
     private TapePlayerMode mode = TapePlayerMode.LOOP;
 
     public TapePlayerBlockEntity(BlockPos pos, BlockState state)
@@ -37,9 +38,18 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         super(ModBlocks.TAPE_PLAYER_BLOCK_ENTITY.get(), pos, state);
     }
 
+
+    public boolean isJammed()
+    {
+        return jammed;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, TapePlayerBlockEntity blockEntity)
     {
         if(blockEntity.currentItem.isEmpty())
+            return;
+
+        if(blockEntity.jammed)
             return;
 
         var prevHadPower = blockEntity.hasPower;
@@ -95,7 +105,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
 
     public int getSignalStrength()
     {
-        if(currentItem.isEmpty() || !hasPower || sequence == null)
+        if(currentItem.isEmpty() || !hasPower || sequence == null || jammed)
             return 0;
 
         var index = mode == TapePlayerMode.PLAY_ONCE
@@ -137,6 +147,8 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         sequence = seq == null
                 ? new NibbleStore(20)
                 : new NibbleStore(seq.bytes());
+
+        jammed = (seq != null && seq.isLaceSequence());
 
         tickCounter = 0;
         setChanged();

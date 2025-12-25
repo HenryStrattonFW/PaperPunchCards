@@ -191,6 +191,15 @@ public class CardReaderBlock extends BaseEntityBlock
         }
         if (blockEntity instanceof CardReaderBlockEntity cardReader)
         {
+            if(cardReader.isJammed())
+            {
+                // trigger jammed warning.
+                player.displayClientMessage(
+                        PaperPunchCards.getTranslation("message.reader_player_jammed"),
+                        true
+                );
+                return ItemInteractionResult.SUCCESS;
+            }
             if (!cardReader.hasItem() && !stack.isEmpty() && stack.is(ModItems.PUNCH_CARD_ITEM))
             {
                 if(!cardReader.isConfigured())
@@ -236,6 +245,14 @@ public class CardReaderBlock extends BaseEntityBlock
     public void tryConfigureReader(Player player, ItemStack stack, Level level, CardReaderBlockEntity cardReader)
     {
         var sequence = stack.get(ModDataComponents.SIGNAL_SEQUENCE);
+        if(cardReader.isJammed())
+        {
+            player.displayClientMessage(
+                    PaperPunchCards.getTranslation("message.reader_player_jammed"),
+                    true
+            );
+            return;
+        }
         if(cardReader.trySetBakedSequence(player, sequence))
         {
             if(sequence == null)

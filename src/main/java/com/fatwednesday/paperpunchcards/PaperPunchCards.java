@@ -2,6 +2,7 @@ package com.fatwednesday.paperpunchcards;
 
 import com.fatwednesday.paperpunchcards.registration.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModLoadingContext;
@@ -55,7 +56,7 @@ public class PaperPunchCards
         return ("%s:%s").formatted(MOD_ID, tag);
     }
 
-    public static Component getTranslation(String key)
+    public static MutableComponent getTranslation(String key)
     {
         return Component.translatable("%s.%s".formatted(MOD_ID, key));
     }
