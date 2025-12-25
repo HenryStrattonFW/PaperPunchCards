@@ -7,9 +7,11 @@ import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,9 +51,6 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         if(blockEntity.currentItem.isEmpty())
             return;
 
-        if(blockEntity.jammed)
-            return;
-
         var prevHadPower = blockEntity.hasPower;
         var prevSignal = blockEntity.getSignalStrength();
         var currentlyPowered = level.hasNeighborSignal(pos);
@@ -59,33 +58,43 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
 
         if(currentlyPowered)
         {
-            switch (mode)
+            if(blockEntity.jammed)
             {
-                case LOOP:
-                    blockEntity.tickCounter++;
-                    if(blockEntity.tickCounter >= blockEntity.sequence.size())
-                    {
-                        blockEntity.tickCounter = 0;
-                    }
-                    break;
-
-                case PLAY_ONCE:
-                    if (blockEntity.tickCounter < blockEntity.sequence.size())
-                    {
+                if(!prevHadPower)
+                {
+                    blockEntity.triggerJammedParticle();
+                }
+            }
+            else
+            {
+                switch (mode)
+                {
+                    case LOOP:
                         blockEntity.tickCounter++;
-                    }
-                    break;
-
-                case STEP:
-                    if (!prevHadPower)
-                    {
-                        blockEntity.tickCounter++;
-                        if(blockEntity.tickCounter >= blockEntity.sequence.size())
+                        if (blockEntity.tickCounter >= blockEntity.sequence.size())
                         {
                             blockEntity.tickCounter = 0;
                         }
-                    }
-                    break;
+                        break;
+
+                    case PLAY_ONCE:
+                        if (blockEntity.tickCounter < blockEntity.sequence.size())
+                        {
+                            blockEntity.tickCounter++;
+                        }
+                        break;
+
+                    case STEP:
+                        if (!prevHadPower)
+                        {
+                            blockEntity.tickCounter++;
+                            if (blockEntity.tickCounter >= blockEntity.sequence.size())
+                            {
+                                blockEntity.tickCounter = 0;
+                            }
+                        }
+                        break;
+                }
             }
         }
         else if(prevHadPower && mode != TapePlayerMode.STEP)
@@ -149,6 +158,10 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
                 : new NibbleStore(seq.bytes());
 
         jammed = (seq != null && seq.isLaceSequence());
+        if(jammed)
+        {
+            triggerJammedParticle();
+        }
 
         tickCounter = 0;
         setChanged();
@@ -159,7 +172,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         if(currentItem.isEmpty())
             return TapePlayerState.EMPTY;
 
-        return hasPower
+        return hasPower && !isJammed()
                 ? TapePlayerState.ACTIVE
                 : TapePlayerState.FULL;
     }
@@ -216,6 +229,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
                 sequence = seq == null
                         ? new NibbleStore(20)
                         : new NibbleStore(seq.bytes());
+                jammed = (seq != null && seq.isLaceSequence());
                 setChanged();
                 return;
             }
@@ -251,5 +265,20 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries)
     {
         loadAdditional(pkt.getTag(), registries);
+    }
+
+    public void triggerJammedParticle()
+    {
+        if(level instanceof ServerLevel serverLevel)
+        {
+            var pos = getBlockPos().getCenter();
+            serverLevel.sendParticles(
+                    ParticleTypes.ANGRY_VILLAGER,
+                    pos.x, pos.y + 0.5, pos.z,
+                    10,
+                    0, 0, 0,
+                    5
+            );
+        }
     }
 }

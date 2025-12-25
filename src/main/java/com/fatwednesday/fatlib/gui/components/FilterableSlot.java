@@ -34,11 +34,11 @@ public class FilterableSlot extends ObservableSlot
 
         for(var filter : typeFilter)
             if(filter.isAssignableFrom(itemClass))
-                return true;
+                return super.mayPlace(stack);
 
         for(var filter : itemTagFilter)
             if(stack.is(filter))
-                return true;
+                return super.mayPlace(stack);
 
         return false;
     }

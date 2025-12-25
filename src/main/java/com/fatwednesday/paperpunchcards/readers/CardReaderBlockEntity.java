@@ -8,9 +8,11 @@ import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -94,7 +96,9 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             }
             else if(seq.isLaceSequence())
             {
+                PaperPunchCards.log("Loaded reader in jammed state.");
                 jammed = true;
+                triggerJammedParticle();
                 cachedState = CardReaderState.BAD;
             }
             else
@@ -190,7 +194,8 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             var parsed = ItemStack.parse(registries, tag.getCompound(PunchCardTag));
             if(parsed.isPresent())
             {
-                setItem(parsed.get());
+                // Defer the setItem call to onLoad as it needs level access.
+                currentItem = parsed.get();
             }
             else
             {
@@ -203,6 +208,16 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
             residualSignalTicks = tag.getInt(ResidualTag);
         }
         setChanged();
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        if (level != null && currentItem != null)
+        {
+            setItem(currentItem);
+        }
     }
 
     @Override
@@ -229,5 +244,20 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries)
     {
         loadAdditional(pkt.getTag(), registries);
+    }
+
+    public void triggerJammedParticle()
+    {
+        if(level instanceof ServerLevel serverLevel)
+        {
+            var pos = getBlockPos().getCenter();
+            serverLevel.sendParticles(
+                    ParticleTypes.ANGRY_VILLAGER,
+                    pos.x, pos.y + 0.5, pos.z,
+                    10,
+                    0, 0, 0,
+                    5
+            );
+        }
     }
 }

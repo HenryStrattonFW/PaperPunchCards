@@ -29,6 +29,7 @@ public class CardPuncherMenu
 {
     public static final int MAX_NAME_LENGTH = 16;
 
+    private static final int DEFAULT_SEQ_SIZE = 20;
     private static final int INPUT_INDEX = 0;
     private static final int OUTPUT_INDEX = 1;
     private static final int INV_INDEX_START = 2;
@@ -40,7 +41,7 @@ public class CardPuncherMenu
     private OutputSlot outputSlot;
     private FilterableSlot inputSlot;
     // default to something empty even before we have an input.
-    private NibbleStore sequenceData = new NibbleStore(20);
+    private NibbleStore sequenceData = new NibbleStore(DEFAULT_SEQ_SIZE);
     private InputChangeListener changeListener;
     private String itemName;
 
@@ -149,16 +150,16 @@ public class CardPuncherMenu
             }
             else
             {
-                var targetSize = 20 * data.punchable.pageCount();
+                var targetSize = DEFAULT_SEQ_SIZE * data.punchable.pageCount();
                 if(sequenceData.size() != targetSize)
                 {
-                    sequenceData = new NibbleStore(20 * data.punchable.pageCount());
+                    sequenceData = new NibbleStore(DEFAULT_SEQ_SIZE * data.punchable.pageCount());
                 }
             }
         }
         else
         {
-            sequenceData.clear();
+            sequenceData = new NibbleStore(DEFAULT_SEQ_SIZE);
         }
 
         updateOutputSlotContents();
