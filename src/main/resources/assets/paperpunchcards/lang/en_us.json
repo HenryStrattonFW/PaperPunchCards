@@ -36,5 +36,28 @@
   "paperpunchcards.patchouli.landing": "Short guide to get you started when dipping your toes into the Paper Punch Cards mod.",
 
   "paperpunchcards.configuration.section.paperpunchcards.server.toml":"Server Config" ,
-  "paperpunchcards.configuration.section.paperpunchcards.server.toml.title": "Paper Punch Cards"
+  "paperpunchcards.configuration.section.paperpunchcards.server.toml.title": "Paper Punch Cards",
+
+  "paperpunchcards.advancements.title.tab": "PaperPunchCards",
+  "paperpunchcards.advancements.description.tab": "Retro tech advancements",
+
+  "paperpunchcards.advancements.title.cutting_edge": "The Cutting Edge",
+  "paperpunchcards.advancements.description.cutting_edge": "Get or craft a Guillotine",
+
+  "paperpunchcards.advancements.title.punchy_mc_punchface": "Punchy McPunchFace",
+  "paperpunchcards.advancements.description.punchy_mc_punchface": "Get or craft a card puncher",
+
+  "paperpunchcards.advancements.title.punching_holes": "Punching Holes",
+  "paperpunchcards.advancements.description.punching_holes": "Punch data into a paper tape or punch card",
+
+  "paperpunchcards.advancements.title.power_of_nibbles": "Specific Nibbles",
+  "paperpunchcards.advancements.description.power_of_nibbles": "Configure a card reader.",
+
+  "paperpunchcards.advancements.title.something_lacey": "Something Lacey",
+  "paperpunchcards.advancements.description.something_lacey": "What could such a flimsy thing be used for?",
+
+  "paperpunchcards.sounds.guillotine_cut": "Guillotine Cut",
+  "paperpunchcards.sounds.hole_punch": "Hole Punch",
+  "paperpunchcards.sounds.reader_bad": "Positive Beep",
+  "paperpunchcards.sounds.reader_good": "Negative Beep"
 }

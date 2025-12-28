@@ -2,6 +2,7 @@
   "name": "Card Puncher",
   "icon": "paperpunchcards:card_puncher_block",
   "category": "paperpunchcards:pamphlet_category",
+  "sortnum": 1,
   "pages": [
     {
       "type": "patchouli:text",

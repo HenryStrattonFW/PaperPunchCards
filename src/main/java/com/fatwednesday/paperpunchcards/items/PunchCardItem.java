@@ -75,15 +75,6 @@ public class PunchCardItem extends Item implements PaperPunchable
                     true
             );
         }
-        else
-        {
-            var seq = stack.get(ModDataComponents.SIGNAL_SEQUENCE);
-            var nibs = new NibbleStore(seq.bytes());
-            player.displayClientMessage(
-                    Component.literal(nibs.toString()),
-                    true
-            );
-        }
         return super.use(level, player, usedHand);
     }
 

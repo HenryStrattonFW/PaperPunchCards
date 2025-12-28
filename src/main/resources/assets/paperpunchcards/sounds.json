@@ -1,0 +1,30 @@
+{
+  "guillotine_cut" :
+  {
+    "subtitle": "paperpunchcards.sounds.guillotine_cut",
+    "sounds": [
+      "paperpunchcards:guillotine"
+    ]
+  },
+  "hole_punch" :
+  {
+    "subtitle": "paperpunchcards.sounds.hole_punch",
+    "sounds": [
+      "paperpunchcards:hole_punch"
+    ]
+  },
+  "reader_good" :
+  {
+    "subtitle": "paperpunchcards.sounds.reader_good",
+    "sounds": [
+      "paperpunchcards:reader_good"
+    ]
+  },
+  "reader_bad" :
+  {
+    "subtitle": "paperpunchcards.sounds.reader_bad",
+    "sounds": [
+      "paperpunchcards:reader_bad"
+    ]
+  }
+}

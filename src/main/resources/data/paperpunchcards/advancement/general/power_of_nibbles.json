@@ -1,0 +1,27 @@
+{
+  "parent": "paperpunchcards:general/punching_holes",
+  "display": {
+    "icon": {
+      "id": "paperpunchcards:card_reader_block"
+    },
+    "title": {
+      "translate": "paperpunchcards.advancements.title.power_of_nibbles"
+    },
+    "description": {
+      "translate": "paperpunchcards.advancements.description.power_of_nibbles"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "hidden": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "configured": {
+      "trigger": "paperpunchcards:mod_event",
+      "conditions": {
+        "event": "paperpunchcards:reader_configured"
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}

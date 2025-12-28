@@ -2,6 +2,7 @@ package com.fatwednesday.paperpunchcards.gui;
 
 import com.fatwednesday.fatlib.gui.components.GuiTexture;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
+import com.fatwednesday.paperpunchcards.registration.ModAudio;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -9,8 +10,10 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 /*
 * Based largely on the StoneCutter menu + screen, so a lot of code copied
@@ -50,10 +53,12 @@ public class GuillotineScreen extends AbstractContainerScreen<GuillotineMenu>
     private int startIndex;
     private float scrollOffset;
     private boolean scrolling;
+    private Player player;
 
     public GuillotineScreen(GuillotineMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
+        player = playerInventory.player;
         imageWidth = BG_TEXTURE.width();
         imageHeight = BG_TEXTURE.height() + INV_BG_TEXTURE.height();
         inventoryLabelX = 8;
@@ -166,7 +171,6 @@ public class GuillotineScreen extends AbstractContainerScreen<GuillotineMenu>
                 d0 < RECIPES_IMAGE_SIZE_WIDTH && d1 < RECIPES_IMAGE_SIZE_HEIGHT &&
                 menu.clickMenuButton(minecraft.player, i))
             {
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.SHEEP_SHEAR, 1.0F));
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, i);
                 return true;
             }

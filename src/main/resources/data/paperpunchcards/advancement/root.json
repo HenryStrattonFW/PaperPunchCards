@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "id": "paperpunchcards:tape_player_block"
+    },
+    "title": {
+      "translate": "paperpunchcards.advancements.title.tab"
+    },
+    "description": {
+      "translate": "paperpunchcards.advancements.description.tab"
+    },
+    "background": "paperpunchcards:textures/gui/advancements/bg.png",
+    "hidden": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "sends_telemetry_event": false
+}

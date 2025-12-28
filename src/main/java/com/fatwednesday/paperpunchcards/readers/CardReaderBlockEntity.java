@@ -2,7 +2,10 @@ package com.fatwednesday.paperpunchcards.readers;
 
 import com.fatwednesday.paperpunchcards.Config;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
+import com.fatwednesday.paperpunchcards.compat.jei.JEIPaperPunchCardsPlugin;
 import com.fatwednesday.paperpunchcards.items.PunchCardItem;
+import com.fatwednesday.paperpunchcards.registration.ModAdvancements;
+import com.fatwednesday.paperpunchcards.registration.ModAudio;
 import com.fatwednesday.paperpunchcards.registration.ModBlocks;
 import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
@@ -13,6 +16,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,21 +79,52 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         cachedState = bakedSequence == null
                 ? CardReaderState.UNSET
                 : CardReaderState.EMPTY;
+
         CardReaderBlock.refreshState(level, getBlockPos());
+
+        var level = player.level();
+        if(level instanceof ServerLevel serverLevel)
+        {
+            if (player instanceof ServerPlayer sp && cachedState == CardReaderState.EMPTY)
+            {
+                ModAdvancements.MOD_EVENT_TRIGGER.get().trigger(sp, ModAdvancements.READER_CONFIGURED_EVENT);
+                ModAudio.tryPlaySound(null, getBlockPos(), serverLevel, SoundSource.BLOCKS);
+            }
+        }
+
+
         setChanged();
         return true;
     }
 
-    public void setItem(ItemStack stack)
+    public void setItem(Player player, ItemStack stack)
     {
         if(!(stack.getItem() instanceof PunchCardItem))
         {
             PaperPunchCards.error("Invalid item stack, must be stack of PunchCardItem");
             return;
         }
-
         currentItem = stack;
-        if(currentItem.has(ModDataComponents.SIGNAL_SEQUENCE))
+        onItemSetInternal();
+
+        var level = player.level();
+        if(level instanceof ServerLevel serverLevel)
+        {
+            // NOTE: configure sound triggered from trySetBackedSequence, and no sound for removing card.
+            if (cachedState == CardReaderState.BAD)
+            {
+                ModAudio.tryPlaySound(ModAudio.READER_BAD.get(), getBlockPos(), serverLevel, SoundSource.BLOCKS);
+            }
+            else if (cachedState == CardReaderState.GOOD)
+            {
+                ModAudio.tryPlaySound(ModAudio.READER_GOOD.get(), getBlockPos(), serverLevel, SoundSource.BLOCKS);
+            }
+        }
+    }
+
+    private void onItemSetInternal()
+    {
+        if(currentItem != null && currentItem.has(ModDataComponents.SIGNAL_SEQUENCE))
         {
             var seq = currentItem.get(ModDataComponents.SIGNAL_SEQUENCE);
             if(seq == null)
@@ -110,9 +147,14 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
         }
         else
         {
-            cachedState = CardReaderState.BAD;
+            cachedState = bakedSequence == null
+                    ? CardReaderState.UNSET
+                    : CardReaderState.BAD;
         }
-        CardReaderBlock.refreshState(level, getBlockPos());
+        if(level != null)
+        {
+            CardReaderBlock.refreshState(level, getBlockPos());
+        }
         setChanged();
     }
 
@@ -214,9 +256,13 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
     public void onLoad()
     {
         super.onLoad();
-        if (level != null && currentItem != null)
+        if (level != null)
         {
-            setItem(currentItem);
+            onItemSetInternal();
+        }
+        else
+        {
+            PaperPunchCards.error("No level in onLoad");
         }
     }
 
@@ -258,6 +304,8 @@ public class CardReaderBlockEntity extends BlockEntity implements Clearable
                     0, 0, 0,
                     5
             );
+
+            ModAudio.tryPlaySound(SoundEvents.REDSTONE_TORCH_BURNOUT, getBlockPos(), serverLevel, SoundSource.BLOCKS);
         }
     }
 }

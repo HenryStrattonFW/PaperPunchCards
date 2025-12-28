@@ -211,7 +211,7 @@ public class CardReaderBlock extends BaseEntityBlock
                     return ItemInteractionResult.sidedSuccess(level.isClientSide);
                 }
                 var item = stack.split(1);
-                cardReader.setItem(item);
+                cardReader.setItem(player, item);
                 level.updateNeighbourForOutputSignal(pos, state.getBlock());
                 return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }

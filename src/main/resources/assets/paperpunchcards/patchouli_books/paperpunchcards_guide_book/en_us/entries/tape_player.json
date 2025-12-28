@@ -2,6 +2,7 @@
   "name": "Tape Player",
   "icon": "paperpunchcards:tape_player_block",
   "category": "paperpunchcards:pamphlet_category",
+  "sortnum": 5,
   "pages": [
     {
       "type": "patchouli:text",

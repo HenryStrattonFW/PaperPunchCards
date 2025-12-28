@@ -2,6 +2,7 @@
   "name": "Punch Card",
   "icon": "paperpunchcards:punch_card_item",
   "category": "paperpunchcards:pamphlet_category",
+  "sortnum": 2,
   "pages": [
     {
       "type": "patchouli:text",

@@ -1,0 +1,31 @@
+{
+  "parent": "paperpunchcards:root",
+  "display": {
+    "icon": {
+      "id": "paperpunchcards:guillotine_block"
+    },
+    "title": {
+      "translate": "paperpunchcards.advancements.title.cutting_edge"
+    },
+    "description": {
+      "translate": "paperpunchcards.advancements.description.cutting_edge"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "hidden": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "guillotine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "paperpunchcards:guillotine_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "sends_telemetry_event": false
+}
