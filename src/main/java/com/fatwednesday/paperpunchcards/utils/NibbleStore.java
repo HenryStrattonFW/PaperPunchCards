@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class NibbleStore
 {
+    private static final byte fullByte = (byte)0xFF;
     private final byte[] data;
 
     public NibbleStore(int size)
@@ -23,6 +24,15 @@ public class NibbleStore
             if (b != 0)
                 return false;
 
+        return true;
+    }
+
+    public boolean isFull()
+    {
+        for (byte b : data)
+        {
+            if (b != fullByte) return false;
+        }
         return true;
     }
 

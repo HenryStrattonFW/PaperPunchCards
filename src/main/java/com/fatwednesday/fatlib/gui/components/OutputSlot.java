@@ -1,5 +1,6 @@
 package com.fatwednesday.fatlib.gui.components;
 
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,6 @@ public class OutputSlot extends ObservableSlot
     {
         return false;
     }
-
 
     @Override
     public void onTake(Player player, ItemStack stack)

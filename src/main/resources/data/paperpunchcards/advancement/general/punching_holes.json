@@ -1,0 +1,36 @@
+{
+  "parent": "paperpunchcards:general/punchy_mc_punchface",
+  "display": {
+    "icon": {
+      "id": "paperpunchcards:punch_card_item",
+      "components": {
+        "paperpunchcards:signal_sequence": "AQ=="
+      }
+    },
+    "title": {
+      "translate": "paperpunchcards.advancements.title.punching_holes"
+    },
+    "description": {
+      "translate": "paperpunchcards.advancements.description.punching_holes"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "hidden": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "punch_card": {
+      "trigger": "paperpunchcards:punched_item",
+      "conditions": {
+        "item": {
+          "items":
+          [
+            "paperpunchcards:paper_tape_item",
+            "paperpunchcards:punch_card_item"
+          ]
+        }
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}

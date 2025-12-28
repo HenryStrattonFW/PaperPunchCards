@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -40,6 +41,8 @@ public class PaperPunchCards
         ModMenus.register(modEventBus);
         ModDataComponents.register(modEventBus);
         ModRecipes.register(modEventBus);
+        ModAdvancements.register(modEventBus);
+        ModAudio.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 

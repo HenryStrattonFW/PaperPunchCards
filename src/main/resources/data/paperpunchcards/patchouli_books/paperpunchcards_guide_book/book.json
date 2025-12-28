@@ -7,6 +7,6 @@
   "pamphlet": "true",
   "book_texture": "patchouli:textures/gui/book_gray.png",
   "model": "paperpunchcards:paperpunchcards_guide_book",
-  "filler_texture": "paperpunchcards:textures/gui/patchouli/filler",
+  "filler_texture": "paperpunchcards:textures/gui/patchouli/filler.png",
   "show_progress": "false"
 }

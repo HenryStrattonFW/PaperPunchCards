@@ -8,19 +8,22 @@ import com.fatwednesday.fatlib.payloads.FatLibMenuRenamePayload;
 import com.fatwednesday.fatlib.utils.LogoutItemGuard;
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperPunchable;
+import com.fatwednesday.paperpunchcards.registration.ModAdvancements;
+import com.fatwednesday.paperpunchcards.registration.ModAudio;
 import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
 import com.fatwednesday.paperpunchcards.utils.SignalSequence;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class CardPuncherMenu
@@ -173,6 +176,19 @@ public class CardPuncherMenu
     private void onOutputTaken(Player player, ItemStack stack)
     {
         stack.onCraftedBy(player.level(), player, stack.getCount());
+        if (!player.level().isClientSide && player instanceof ServerPlayer sp)
+        {
+            ModAdvancements.PUNCHED_ITEM_TRIGGER.get().trigger(sp, stack);
+
+            if (sequenceData.isFull())
+            {
+                ModAdvancements.MOD_EVENT_TRIGGER.get().trigger(sp, ModAdvancements.LACE_CREATED_EVENT);
+            }
+            if (!sequenceData.isEmpty())
+            {
+                ModAudio.tryPlaySound(ModAudio.HOLE_PUNCH.get(), player.blockPosition(), sp.serverLevel(), SoundSource.BLOCKS);
+            }
+        }
 
         inputSlot.remove(1);
         if(changeListener != null)
@@ -325,4 +341,5 @@ public class CardPuncherMenu
     }
 
     public record PaperPunchableStack(ItemStack stack, PaperPunchable punchable){}
+
 }

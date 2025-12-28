@@ -1,0 +1,30 @@
+{
+  "parent": "paperpunchcards:general/punching_holes",
+  "display": {
+    "icon": {
+      "id": "paperpunchcards:paper_tape_item",
+      "components": {
+        "paperpunchcards:signal_sequence": "AQ=="
+      }
+    },
+    "title": {
+      "translate": "paperpunchcards.advancements.title.something_lacey"
+    },
+    "description": {
+      "translate": "paperpunchcards.advancements.description.something_lacey"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "hidden": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "configured": {
+      "trigger": "paperpunchcards:mod_event",
+      "conditions": {
+        "event": "paperpunchcards:lace_created"
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}

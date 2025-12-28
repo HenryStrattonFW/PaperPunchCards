@@ -4,11 +4,16 @@ import com.fatwednesday.fatlib.gui.components.ObservableSlot;
 import com.fatwednesday.fatlib.gui.components.OutputSlot;
 import com.fatwednesday.fatlib.gui.menus.MenuWithInventory;
 import com.fatwednesday.fatlib.utils.RecipeUtils;
+import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.crafting.GuillotineRecipe;
 import com.fatwednesday.paperpunchcards.crafting.GuillotineRecipeInput;
+import com.fatwednesday.paperpunchcards.registration.ModAudio;
 import com.fatwednesday.paperpunchcards.registration.ModMenus;
 import com.fatwednesday.paperpunchcards.registration.ModRecipes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -80,6 +85,10 @@ public class GuillotineMenu extends MenuWithInventory
         var recipe = allRecipes.get(selectedRecipeIndex.get()).value();
         RecipeUtils.consumeIngredients(recipe.ingredients(), inputSlots);
         updateOutputSlotContents();
+
+        var level = player.level();
+        if (level instanceof ServerLevel serverLevel)
+            ModAudio.tryPlaySound(ModAudio.GUILLOTINE_CUT.get(), player.blockPosition(), serverLevel, SoundSource.BLOCKS);
     }
 
     private void onInputSlotChanged(ObservableSlot slot)
@@ -93,7 +102,6 @@ public class GuillotineMenu extends MenuWithInventory
         updateOutputSlotContents();
     }
 
-
     @Override
     public ItemStack quickMoveStack(Player player, int index)
     {
@@ -104,16 +112,16 @@ public class GuillotineMenu extends MenuWithInventory
         var rawStack = slot.getItem();
         var quickMoveStack = rawStack.copy();
 
-        if(index == OUTPUT_INDEX)
+        if (index == OUTPUT_INDEX)
         {
             // Output slot > player
-            if(!this.moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
+            if (!this.moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
             {
                 return ItemStack.EMPTY;
             }
             slot.onQuickCraft(rawStack, quickMoveStack);
         }
-        else if(index <= INPUT_INDEX_C)
+        else if (index <= INPUT_INDEX_C)
         {
             if (!moveItemStackTo(rawStack, INV_INDEX_START, HOTBAR_INDEX_END, true))
             {
@@ -123,12 +131,11 @@ public class GuillotineMenu extends MenuWithInventory
         else
         {
             // player > container.
-            if(!moveItemStackTo(rawStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
+            if (!moveItemStackTo(rawStack, INPUT_INDEX_A, INPUT_INDEX_C, false))
             {
                 return ItemStack.EMPTY;
             }
         }
-
         if (rawStack.isEmpty())
         {
             slot.set(ItemStack.EMPTY);
@@ -143,7 +150,6 @@ public class GuillotineMenu extends MenuWithInventory
             return ItemStack.EMPTY;
         }
         slot.onTake(player, rawStack);
-
         broadcastChanges();
         return quickMoveStack;
     }

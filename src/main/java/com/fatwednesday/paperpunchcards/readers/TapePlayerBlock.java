@@ -118,7 +118,7 @@ public class TapePlayerBlock extends BaseEntityBlock
             }
             if (!tapePlayer.hasItem() && !stack.isEmpty() && stack.is(ModItems.PAPER_TAPE_ITEM))
             {
-                tapePlayer.setItem(stack.split(1));
+                tapePlayer.setItem(player, stack.split(1));
                 refreshState(level, pos);
                 return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }

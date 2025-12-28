@@ -2,6 +2,7 @@
   "name": "Card Reader",
   "icon": "paperpunchcards:card_reader_block",
   "category": "paperpunchcards:pamphlet_category",
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:text",

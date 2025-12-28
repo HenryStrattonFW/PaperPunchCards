@@ -2,6 +2,8 @@ package com.fatwednesday.paperpunchcards.readers;
 
 import com.fatwednesday.paperpunchcards.PaperPunchCards;
 import com.fatwednesday.paperpunchcards.items.PaperTapeItem;
+import com.fatwednesday.paperpunchcards.registration.ModAdvancements;
+import com.fatwednesday.paperpunchcards.registration.ModAudio;
 import com.fatwednesday.paperpunchcards.registration.ModBlocks;
 import com.fatwednesday.paperpunchcards.registration.ModDataComponents;
 import com.fatwednesday.paperpunchcards.utils.NibbleStore;
@@ -11,7 +13,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -143,7 +149,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
         setChanged();
     }
 
-    public void setItem(ItemStack stack)
+    public void setItem(Player player, ItemStack stack)
     {
         if(!(stack.getItem() instanceof PaperTapeItem))
         {
@@ -279,6 +285,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
                     0, 0, 0,
                     5
             );
+            ModAudio.tryPlaySound(SoundEvents.REDSTONE_TORCH_BURNOUT, getBlockPos(), serverLevel, SoundSource.BLOCKS);
         }
     }
 }

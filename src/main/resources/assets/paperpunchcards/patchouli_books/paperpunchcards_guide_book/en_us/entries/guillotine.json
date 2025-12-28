@@ -2,6 +2,7 @@
   "name": "Guillotine",
   "icon": "paperpunchcards:guillotine_block",
   "category": "paperpunchcards:pamphlet_category",
+  "sortnum": 0,
   "pages": [
     {
       "type": "patchouli:text",
