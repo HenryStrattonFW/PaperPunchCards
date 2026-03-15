@@ -39,6 +39,7 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
     private int tickCounter = -1;
     private boolean hasPower = false;
     private boolean jammed = false;
+    private boolean isAlternateTick;
     private TapePlayerMode mode = TapePlayerMode.LOOP;
 
     public TapePlayerBlockEntity(BlockPos pos, BlockState state)
@@ -76,7 +77,15 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
                 switch (mode)
                 {
                     case LOOP:
-                        blockEntity.tickCounter++;
+                        if(!blockEntity.isAlternateTick)
+                        {
+                            blockEntity.tickCounter++;
+                            blockEntity.isAlternateTick = true;
+                        }
+                        else
+                        {
+                            blockEntity.isAlternateTick = false;
+                        }
                         if (blockEntity.tickCounter >= blockEntity.sequence.size())
                         {
                             blockEntity.tickCounter = 0;
@@ -86,14 +95,30 @@ public class TapePlayerBlockEntity extends BlockEntity implements Clearable
                     case PLAY_ONCE:
                         if (blockEntity.tickCounter < blockEntity.sequence.size())
                         {
-                            blockEntity.tickCounter++;
+                            if(!blockEntity.isAlternateTick)
+                            {
+                                blockEntity.tickCounter++;
+                                blockEntity.isAlternateTick = true;
+                            }
+                            else
+                            {
+                                blockEntity.isAlternateTick = false;
+                            }
                         }
                         break;
 
                     case STEP:
                         if (!prevHadPower)
                         {
-                            blockEntity.tickCounter++;
+                            if(!blockEntity.isAlternateTick)
+                            {
+                                blockEntity.tickCounter++;
+                                blockEntity.isAlternateTick = true;
+                            }
+                            else
+                            {
+                                blockEntity.isAlternateTick = false;
+                            }
                             if (blockEntity.tickCounter >= blockEntity.sequence.size())
                             {
                                 blockEntity.tickCounter = 0;
